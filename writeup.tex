@@ -1,0 +1,184 @@
+%&header
+
+\documentclass[a4paper,DIV=14]{scrartcl}
+
+
+\usepackage{amsmath}
+\usepackage{subcaption}
+%
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{makecell}
+\usepackage{booktabs}
+\usepackage{rotating}
+\usepackage{float}
+\usepackage{layouts}
+\usepackage{pgf}
+\usepackage{fancyvrb}
+
+\usepackage{todonotes}
+\usepackage{hyperref}
+\usepackage[binary-units,separate-uncertainty=true,round-mode=uncertainty]{siunitx}
+
+\usepackage{tikz}
+
+\usepackage{crimson}
+\usepackage{newtxmath}
+\usepackage{polyglossia}
+\usepackage[backend=biber]{biblatex}
+\usepackage{microtype}
+\usepackage{minted}
+\usepackage{xstring}
+\usepackage{newunicodechar}
+
+\providecommand*{\listingautorefname}{Listing}
+
+
+
+\usetikzlibrary{external}
+\tikzexternalize[up to date check={simple},prefix=./external_figures/]
+\usetikzlibrary{arrows,arrows.meta,bending,positioning,calc,patterns,backgrounds,fit,decorations.pathreplacing,shapes.geometric}
+
+\newcommand\MeanStdValue[2]{%
+  \ensuremath{%
+    \SI{\csname #1Mean\endcsname \pm \csname #1Std\endcsname}{#2}%
+  }%
+}
+
+% ugh
+\newcommand{\inputtikz}[1]{\StrSubstitute{#1}{/}{-}[\filename]\StrSubstitute{\filename}{.}{-}[\filenameNew]\tikzsetnextfilename{\filenameNew}\input{#1}}
+
+\newcommand{\inputpgf}[1]{
+\StrSubstitute{#1}{/}{-}[\filename]\StrSubstitute{\filename}{.}{-}[\filenameNew]\tikzsetnextfilename{\filenameNew}%
+\begin{tikzpicture}\node[inner sep=0pt]{\input{#1}};\end{tikzpicture}%
+}%
+
+
+\definecolor{color0}{HTML}{1f77b4}  % blue
+\definecolor{color1}{HTML}{ff7f0e}  % orange
+\definecolor{color2}{HTML}{2ca02c}  % green
+\definecolor{color3}{HTML}{d62728}  % red
+\definecolor{color4}{HTML}{9467bd}  % purple
+\definecolor{color5}{HTML}{8c564b}  % red-gray
+\definecolor{color6}{HTML}{e377c2}  % pink
+\definecolor{color7}{HTML}{7f7f7f}  % gray
+\definecolor{color8}{HTML}{bcbd22}  % incredibly ugly yellow-gray
+\definecolor{color9}{HTML}{17becf}  % light blue
+
+% colors for multi-compartment illustrations
+\colorlet{comp0}{color1!60}
+\colorlet{comp1}{color5!60}
+\colorlet{comp2}{color8!60}
+\colorlet{comp3}{color2!60}
+\colorlet{comp4}{color3!60}
+\colorlet{comp5}{color6!60}
+
+% \tikzset{external/system call={lualatex -halt-on-error -shell-escape -interaction=batchmode -fmt header -jobname "\image" "\texsource"}}
+
+% ugh
+\makeatletter
+\renewcommand{\todo}[2][]{\tikzexternaldisable\@todo[#1]{#2}\tikzexternalenable}
+\makeatother
+
+\newunicodechar{α}{\alpha}
+\newunicodechar{Α}{\alpha}
+\newunicodechar{β}{\beta}
+\newunicodechar{Β}{\beta}
+\newunicodechar{γ}{\gamma}
+\newunicodechar{δ}{\delta}
+\newunicodechar{ε}{\varepsilon}
+\newunicodechar{Ε}{\varepsilon}
+\newunicodechar{ζ}{\zeta}
+\newunicodechar{η}{\eta}
+\newunicodechar{θ}{\theta}
+\newunicodechar{ι}{\iota}
+\newunicodechar{κ}{\kappa}
+\newunicodechar{λ}{\lambda}
+\newunicodechar{μ}{\mu}
+\newunicodechar{Μ}{\Mu}
+\newunicodechar{ν}{\nu}
+\newunicodechar{ξ}{\xi}
+\newunicodechar{ο}{\omicron}
+\newunicodechar{π}{\pi}
+\newunicodechar{Π}{\Pi}
+\newunicodechar{ρ}{\rho}
+\newunicodechar{Ρ}{\Rho}
+\newunicodechar{σ}{\sigma}
+\newunicodechar{τ}{\tau}
+\newunicodechar{Τ}{\Tau}
+\newunicodechar{υ}{\upsilon}
+\newunicodechar{φ}{\varphi}
+\newunicodechar{χ}{\chi}
+\newunicodechar{ψ}{\psi}
+\newunicodechar{ω}{\omega}
+\newunicodechar{∀}{\forall}
+\newunicodechar{×}{\times}
+\newunicodechar{Γ}{\Gamma}
+\newunicodechar{Δ}{\Delta}
+\newunicodechar{∃}{\exists}
+\newunicodechar{ℤ}{\mathbb{Z}}
+\newunicodechar{∧}{\wedge}
+\newunicodechar{Θ}{\Theta}
+\newunicodechar{⇒}{\implies}
+\newunicodechar{∩}{\cap}
+\newunicodechar{Λ}{\Lambda}
+\newunicodechar{∫}{\int}
+\newunicodechar{ℕ}{\mathbb{N}}
+\newunicodechar{Ξ}{\Xi}
+\newunicodechar{∇}{\nabla}
+\newunicodechar{Π}{\Pi}
+\newunicodechar{ℝ}{\mathbb{R}}
+\newunicodechar{Σ}{\Sigma}
+\newunicodechar{⇔}{\iff}
+\newunicodechar{Υ}{\Upsilon}
+\newunicodechar{Φ}{\Phi}
+\newunicodechar{ℂ}{\mathbb{C}}
+\newunicodechar{Ψ}{\Psi}
+\newunicodechar{Ω}{\Omega}
+\newunicodechar{ϑ}{\vartheta}
+\newunicodechar{∞}{\infty}
+\newunicodechar{∈}{\in}
+\newunicodechar{⊂}{\subset}
+\newunicodechar{ϰ}{\varkappa}
+\newunicodechar{ϕ}{\phi}
+\newunicodechar{∨}{\vee}
+\newunicodechar{∮}{\oint}
+\newunicodechar{↦}{\mapsto}
+\newunicodechar{ℚ}{\mathbb{Q}}
+\newunicodechar{⊆}{\subseteq}
+\newunicodechar{⊊}{\subsetneq}
+\newunicodechar{∪}{\cup}
+\newunicodechar{·}{\cdot}
+
+
+\addbibresource{bib.bib}
+
+% \pagestyle{scrheadings}
+
+% \usemintedstyle{tango}
+\usemintedstyle{friendly}
+\setminted[]{breaklines=true,linenos,frame=lines,mathescape=true,tabsize=4}
+
+\title{ba writeup}
+\author{Robin Heinemann}
+\date{February 2023}
+
+\input{values.tex}
+\input{data.tex}
+
+\renewcommand\autocite[1]{??}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\include{introduction.tex}
+\include{background.tex}
+\include{implementation.tex}
+\include{results.tex}
+\include{discussion.tex}
+\include{outlook.tex}
+
+\end{document}
