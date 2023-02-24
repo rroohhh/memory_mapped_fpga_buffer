@@ -2,20 +2,14 @@
 
 \newcommand\HWinTheLoop{hardware in-the-loop}
 
-\newcommand\emitDummyInstr{\texttt{\Verb|emit_dummy(N)|}}
-\newcommand\haltInstr{\texttt{\Verb|halt()|}}
-\newcommand\resetSleepInstr{\texttt{\Verb|reset_sleep()|}}
+\newcommand\emitDummyInstr{\texttt{\Verb|emit_dummy(N)|} instruction}
+\newcommand\haltInstr{\texttt{\Verb|halt()|} instruction}
+\newcommand\resetSleepInstr{\texttt{\Verb|reset_sleep()|} instruction}
 
 \newcommand\systime{systime}
 \newcommand\traceArb{trace arbitration}
 
 \newcommand\allocator{allocator}
-
-\newcommand\linear{linear}
-\newcommand\random{random}
-\newcommand\randomDense{random dense}
-\newcommand\interleaved{interleaved}
-\newcommand\interleavedDense{interleaved dense}
 
 \newcommand\rtt{round trip time}
 
@@ -24,22 +18,23 @@
 \newcommand\xcelium{xcelium}
 \newcommand\xceliumVer{21.03-s009}
 
+\newcommand\HICANNX{HICANN-X}
 
-\newcommand\DPI{DPI}
-\newcommand\PhyWordSize{\SI{64}{\bit}}
 \newcommand\JTAG{JTAG}
 \newcommand\JTAGID{JTAGID}
-\newcommand\taildesc{taildesc}
-\newcommand\curdesc{curdesc}
+\newcommand\taildesc{\texttt{taildesc}}
+\newcommand\curdesc{\texttt{curdesc}}
 \newcommand\RCF{RCF}
-\newcommand\uvmframework{UVM}
 \newcommand\completed{completed}
-\newcommand\Xilinx{Xilinx}
-\newcommand\pbexec{pbexec}
+
+\newcommand\pbexec{playback executor}
 \newcommand\ASIC{ASIC}
+
 \newcommand\ayo{ayo}
-\newcommand\vfifo{vfifo}
-\newcommand\smartconnect{smartconnect}
+\newcommand\flangedram{flange-dram}
+\newcommand\flange{flange}
+\newcommand\hxcomm{\code{hxcomm}}
+
 \newcommand\LVDS{LVDS}
 
 \newcommand\DDR{DDR3}
@@ -50,111 +45,109 @@
 \newcommand\HostARQ{Host-ARQ}
 \newcommand\systemverilog{SystemVerilog}
 
-\newcommand\waitCat{wait category}
-
 \newcommand\DRAM{DRAM}
 
 \newcommand\MIG{MIG}
 
-\newcommand\AW{AW}
-\newcommand\NEXT{NEXT}
-\newcommand\LAST{LAST}
-\newcommand\TVALID{TVALID}
-\newcommand\AR{AR}
-\newcommand\ACLK{ACLK}
+\newcommand\specialWord[1]{\textit{#1}}
+\newcommand\ACLK{\specialWord{ACLK}}
+\newcommand\ARESETn{\specialWord{ARESETn}}
+\newcommand\TLAST{\specialWord{TLAST}}
+\newcommand\TKEEP{\specialWord{TKEEP}}
+\newcommand\TDATA{\specialWord{TDATA}}
+\newcommand\LAST{\specialWord{LAST}}
+\newcommand\TVALID{\specialWord{TVALID}}
+\newcommand\TREADY{\specialWord{TREADY}}
+
+\newcommand\NEXT{\specialWord{NEXT}}
+
+\newcommand\R{\specialWord{R}}
+\newcommand\B{\specialWord{B}}
+\newcommand\W{\specialWord{W}}
+\newcommand\AW{\specialWord{AW}}
+\newcommand\AR{\specialWord{AR}}
+\newcommand\VALID{\specialWord{VALID}}
+\newcommand\READY{\specialWord{READY}}
+
+\newcommand\ValidNextStream{ValidNext stream}
+\newcommand\AXIStream{AXI-Stream}
 \newcommand\AXILite{AXI-Lite}
-\newcommand\ARESETn{ARESETn}
-\newcommand\READY{READY}
-\newcommand\TLAST{TLAST}
-\newcommand\VALID{VALID}
+\newcommand\AXI{AXI}
+
+\newcommand\burstsize{burst size}
+
+
+\newcommand\linear{\specialWord{linear}}
+\newcommand\random{\specialWord{random}}
+\newcommand\randomDense{\specialWord{random dense}}
+\newcommand\interleaved{\specialWord{interleaved}}
+\newcommand\interleavedDense{\specialWord{interleaved dense}}
+
 
 \newcommand\XilinxMIG{XilinxMIG}
+\newcommand\VFIFO{VFIFO}
+\newcommand\Xilinx{Xilinx}
+\newcommand\smartconnect{smartconnect}
+\newcommand\FAXI{FAXI}
+\newcommand\AXIBRAMController{AXIBRAMController}
+\newcommand\AXIDMA{AXIDMA}
+
+
 \newcommand\API{API}
-\newcommand\IPv{IPv}
+
+\newcommand\waitCat{wait category}
 \newcommand\readCat{read category}
+\newcommand\writeCat{write category}
+
 
 \newcommand\BSSTwo{BSS2}
 \newcommand\bssTwoOS{\BSSTwo{} OS}
 
 \newcommand\halfduplex{half-duplex}
 
-\newcommand\pbExecClock{\ensuremath{\SI{125}{\mega\hertz}}}
 
 \newcommand\Gigabitethernet{Gigabit Ethernet}
-
-\newcommand\pbExecBandwidth{\ensuremath{\SI{8}{\giga\bit\per\second}}}
 
 \newcommand\python{Python}
 \newcommand\Kintex{Kintex}
 \newcommand\UTEncoder{UTEncoder}
-\newcommand\vpi{VPI}
 \newcommand\cocotb{cocotb}
-\newcommand\dpi{dpi}
 \newcommand\DMA{DMA}
-\newcommand\pbmem{pbmem}
+\newcommand\pbmem{playback control}
 \newcommand\FPGA{FPGA}
 \newcommand\construct{construct}
-\newcommand\ASICBandwidth{\ensuremath{\SI{8}{\giga\bit\per\second}}}
-\newcommand\writeCat{write category}
-\newcommand\SIMMEMSIZE{\ensuremath{\SI{32}{\mebi\byte}}}
-\newcommand\cocotbaxi{cocotbaxi}
 
-\newcommand\AXI{AXI}
+\newcommand\pbExecClock{\ensuremath{\SI{125}{\mega\hertz}}}
+\newcommand\pbExecBandwidth{\ensuremath{\SI{8}{\giga\bit\per\second}}}
+\newcommand\ASICBandwidth{\ensuremath{\SI{8}{\giga\bit\per\second}}}
+\newcommand\SIMMEMSIZE{\ensuremath{\SI{32}{\mebi\byte}}}
+\newcommand\PhyWordSize{\SI{64}{\bit}}
+\newcommand\HostBandwidth{\SI{1}{\giga\bit\per\second}}
+
+\newcommand\cocotbaxi{cocotb-axi}
+
 \newcommand\FIFO{FIFO}
 
-\newcommand\bramctrl{bramctrl}
-
-\newcommand\vhpi{VHPI}
-
-\newcommand\TKEEP{TKEEP}
-\newcommand\TDATA{TDATA}
+\newcommand\VHPI{VHPI}
+\newcommand\VPI{VPI}
+\newcommand\DPI{DPI}
+\newcommand\uvmframework{UVM}
 
 \newcommand\globalfence{globalfence}
-
-\newcommand\AXIDMA{AXIDMA}
-\newcommand\Ethernet{Ethernet}
 
 \newcommand\hdl{HDL}
 \newcommand\UDP{UDP}
 
-\newcommand\R{R}
-\newcommand\AXIBRAMController{AXIBRAMController}
-
-
 \newcommand\PlaybackProgram{playback program}
 
-\newcommand\TREADY{TREADY}
-
-\newcommand\cpp{cpp}
+\newcommand\cpp{c++}
 
 \newcommand\UT{UT}
 
-\newcommand\burstsize{burst size}
-
-\newcommand\VPI{VPI}
-
-\newcommand\flangedram{flange-dram}
-
 \newcommand\RAM{RAM}
 
-\newcommand\ValidNextStream{ValidNext stream}
-
 \newcommand\AXIRAM{AXIRAM}
-\newcommand\flange{flange}
 
 \newcommand\mmap{mmap}
-
-\newcommand\VFIFO{VFIFO}
-\newcommand\FAXI{FAXI}
-
-\newcommand\HostBandwidth{\SI{1}{\giga\bit\per\second}}
-
-\newcommand\hxcomm{hxcomm}
-
-\newcommand\B{B}
-\newcommand\W{W}
-\newcommand\AXIStream{AXI-Stream}
-
-\newcommand\wait{wait}
 
 \newcommand\DUT{DUT}

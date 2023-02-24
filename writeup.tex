@@ -31,6 +31,24 @@
 \usepackage{xstring}
 \usepackage{newunicodechar}
 
+
+\usepackage[toc]{glossaries}
+\makeglossaries
+
+% \usepackage{nomencl}
+% \let\abbrev\nomenclature
+% \renewcommand{\nomname}{List of Abbreviations}
+% \setlength{\nomlabelwidth}{.25\hsize}
+% \renewcommand{\nomlabel}[1]{#1 \dotfill}
+% \setlength{\nomitemsep}{-\parsep}
+% %\makeglossary
+% \makenomenclature%
+% \newcommand{\markup}[1]{\uline{#1}}
+% \usepackage{makeidx}                              % index of key words
+% \makeindex
+
+\raggedbottom%
+
 \providecommand*{\listingautorefname}{Listing}
 
 
@@ -152,6 +170,7 @@
 
 
 \addbibresource{bib.bib}
+\addbibresource{vision.bib}
 
 % \pagestyle{scrheadings}
 
@@ -159,26 +178,27 @@
 \usemintedstyle{friendly}
 \setminted[]{breaklines=true,linenos,frame=lines,mathescape=true,tabsize=4}
 
-\title{ba writeup}
-\author{Robin Heinemann}
-\date{February 2023}
+% \title{ba writeup}
+% \author{Robin Heinemann}
+% \date{February 2023}
 
 \input{values.tex}
 \input{data.tex}
 
-\renewcommand\autocite[1]{??}
+% \renewcommand\autocite[1]{??}
 
 \begin{document}
 
-\maketitle
+\include{ba_titlepage}
 
 \tableofcontents
 
-\include{introduction.tex}
+% \include{introduction.tex}
 \include{background.tex}
 \include{implementation.tex}
 \include{results.tex}
-\include{discussion.tex}
-\include{outlook.tex}
+% \include{discussion.tex}
+% \include{outlook.tex}
 
+\include{declaration}
 \end{document}

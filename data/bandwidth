@@ -34,7 +34,7 @@
 \newcommand\FAXIRTTWriteAXIStd{17.830916768734888}
 \newcommand\FAXIRTTReadAXIMean{60761.4422}
 \newcommand\FAXIRTTReadAXIStd{18.378411590937777}
-\newcommand\hostarqWriteBwStd{109106.96507490143}
-\newcommand\hostarqWriteBwMean{109040173.62949067}
-\newcommand\hostarqReadBwStd{134560.10269541817}
-\newcommand\hostarqReadBwMean{117241572.91333492}
+\newcommand\hostarqWriteBwStd{0.1091069650749014}
+\newcommand\hostarqWriteBwMean{109.0401736294907}
+\newcommand\hostarqReadBwStd{0.1345601026954181}
+\newcommand\hostarqReadBwMean{117.24157291333495}
