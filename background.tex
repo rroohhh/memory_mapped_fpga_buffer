@@ -1,26 +1,31 @@
 \section{Background}
-\subsection{BrainScaleS-2}
-\subsection{Host - HICANN-X Communication}
+\subsection{\BSSTwo{}}
+The \BSSTwo{} system is the second generation of the \BSS{} neuromorphic computing platform. At its core combines analog emulation of the \AdEx{}\autocite{ref:adex} model for neurons time-continuous synapses with sophisticated digital processing like plasticity provided by microprocessors extended with specialized SIMD units. The emulation is accelerated compared to the biological time by a factor of $\num{1000}$. The current silicon implementation of this architecture is called \HICANNX{} and contains two of these microprocessors as well as $\num{512}$ neurons and $\num{512} · \num{256}$ synapses. The \HICANNX{} \ASIC{} can be used for a variety of applications, like operation as a network attached accelerator\autocite{ref:network_accelerator} as well as usage as a edge computation platform\autocite{mobile_system}.
 
+\subsection{Host - HICANN-X Communication}
+The main interface of the \HICANNX{} \ASIC{} is a set of $\num{16}$ \LVDS{} lanes. Over these \LVDS{} lanes configuration of the parameters controlling the operation of the chip such as configuration of the synapse connections and the neuron parameters as well as neuron events are transmitted. These neuron events can be inputs from sources external to the \ASIC{} to the network of neurons an synapses aswell as events generaten on the \ASIC{} and transmitted to external sinks.
+This communication of events happens in a realtime fashion. The time continuous analog emulation performed by the \ASIC{} cannot be paused and continued arbitrarily. To facilitate this realtime communication a \FPGA{} is used. This thesis will focus mainly on the network attached accelerator deployment. In this case the  \FPGA{} is then connected to a host computer over a network connection. \autoref{fig:schematic_overview} gives a overview over this kind of deployment.
 \begin{figure}
 \centerline{\includegraphics{diagrams/cropped/fpga_overview}}
-\caption{Schematic overview of the FPGA design facilitating the communication between a network attached host computer and a \HICANNX{} \ASIC{}. The host computer communicates with the \FPGA{} using the \UDP{} based \HostARQ{} protocol. The \PlaybackProgram{}s received by the \FPGA{} are stored in the playback and trace buffer and executed using the \pbexec{}. Execution by the \pbexec{} generates events that are transmitted to the \ASIC{}. Events received from the \ASIC{} is timestamped by the \pbexec{} and stored in the playback and trace buffer until it is sent to the host.}
+\caption{Schematic overview of the FPGA design facilitating the communication between a network attached host computer and a \HICANNX{} \ASIC{}. The host computer communicates with the \FPGA{} using the \UDP{} based \HostARQ{} protocol. The \PlaybackProgram{}s received by the \FPGA{} are stored in the playback and trace buffer and executed using the \pbexec{}. Execution by the \pbexec{} generates events that are transmitted to the \ASIC{}. Events received from the \ASIC{} is timestamped by the \pbexec{} and stored in the playback and trace buffer until it is sent to the host.}\label{fig:schematic_overview}
 \end{figure}
 
-Communication with the \ASIC{} requires precise timing due to its physical nature, its emulation cannot be paused and resumed arbitrarily and a high data rate.
-The high data rate interface of the \ASIC{} is made up out of eight \LVDS{} lane in each direction, that can each operate at up to $\SI{2}{\giga\bit\per\second}$, for a total of $\SI{16}{\giga\bit\per\second}$ full duplex bandwidth.
+The realtime communication with the \ASIC{}, especially the transmission and reception of neuron events  requires precise timing and a high bandwidth\autocite{ref:precise_timing}. The precise timing cannot be achieved via the conventional \Gigabitethernet{} used for the communication between \FPGA{} and the host computer.
+Instead the \FPGA{} is used to send neuron events to the \ASIC{} with precise timing and timestamp received events. The precise scheduling of event transmission and the timestamping of the received events on the \FPGA{} is performed by the \pbexec{} module on the \FPGA{}.
+To perform a experiment the host computer generates a sequence of instructions that among the operations necessary to configure the \ASIC{} includes instructions that contain information about the events and the timing of the events that are to be transmitted to the \ASIC{}. This sequence of instructions, called \PlaybackProgram{}, is then processed by the \pbexec{} with a timing resolution of $\SI{8}{\nano\second}$.
+Events received from the \ASIC{} are timestamped with the same resolution.
 
-To achieve the required precise timing a \FPGA{} is used to implement the communication between the host and the \ASIC{}.
-Interaction with the \ASIC{} is converted into a sequence of instructions, the \PlaybackProgram{}, that are processed by the \FPGA{} with deterministic timing at a resolution of $\SI{8}{\nano\second}$.
-Data received from the \ASIC{} is timestamped with the same resolution by the \FPGA{}.
+In the \BSSTwo{}-Cube\autocite{ref:bss_cube} system a \Xilinx{} \Kintex7{} \FPGA{} is used and the \LVDS{} lanes of the \ASIC{} are operated at $\SI{1}{\giga\bit\per\second}$. Moreover the host and the \FPGA{} communicate using \UDP{} protocol over \Gigabitethernet{}. On top of \UDP{} the \HostARQ{}\autocite{ref:hostarq} protocol is used to implement a secured stream with a word size of \PhyWordSize{} over the unsecure \UDP{} protocol.
 
-In the \BSSTwo{} system a \Xilinx{} \Kintex7{} \FPGA{} is used and the \LVDS{} lanes of the \ASIC{} are operated at $\SI{1}{\giga\bit\per\second}$.
+Because the bandwidth between the host computer and the \FPGA{} is far smaller than the bandwidth between the \FPGA{} and the \ASIC{} the \PlaybackProgram{} as well as the received neuron events need to be buffered by the \FPGA{}. This is aided by the connection of the \FPGA{} to a large external memory.
+\autoref{sec:interfaces} and \autoref{sec:pb_exec} give a more detailed overview of the \FPGA{} and especially the \pbexec{}. Finally \autoref{sec:old-pb-trace-management} gives a detailed description of the buffer implementation for the \PlaybackProgram{} and the neuron events, outlines the general requirements for it and highlights its insufficiencies.
 
-The host and the \FPGA{} communicate using \UDP{} protocol over \Gigabitethernet{}. On top of \UDP{} the \HostARQ{}\autocite{ref:hostarq} protocol is used to implement a secured stream with a word size of \PhyWordSize{} over the unsecure \UDP{} protocol.
+This thesis will use these requirements to design a new implementation of the for the \PlaybackProgram{} and the neuron events described in \autoref{sec:impl}.
 
-% rewrite this section.
+\todo{explain secured vs unsecured}
 
-\subsection{\AXI{} and stream interfaces}
+
+\subsection{\AXI{} and stream interfaces}\label{sec:interfaces}
 \subsubsection{Stream-Interfaces}
 Many components of the \FPGA{} design are connected using stream interfaces. Throughout this thesis two different stream interfaces will be encountered. The first is \AXIStream{}\autocite{ref:axi_stream}, a standard interface used by many components provided by \Xilinx{}.
 \AXIStream{} is a unidirectional data stream, that connects a single Transmitter to a single Receiver. A \AXIStream{} consists of at least five signals:
@@ -62,9 +67,7 @@ The basic operations of the \AXI{} protocol are read and write transactions. A r
 Every channel operates separately from each other. This means that for example the data to be written can be transmitted by the Manager on the \W{} channel before the address information is transmitted on the \AW{} channel. A Manager is also allowed to transmit a second read on the \AR{} channel before having received the answer to the first.
 From this it follows that the maximum data rate supported by the bus specification is a single data word each clock cycle on both the read and the write channels. The actual data rate depends on the Manager and the Subordinate.
 
-
-
-\subsection{Playback Executor}
+\subsection{Playback Executor}\label{sec:pb_exec}
 The \pbexec{} is responsible for processing the instruction stream that is received from the playback and trace buffer as swell as receiving, time stamping and transmission to the playback and trace buffer of events from the \ASIC{}. This section will give a brief overview of this module, a more detail description can be found in \autocite{ref:pb_exec}
 
 The instructions that are processed by the executor can broadly be categorized into the three different categories:
