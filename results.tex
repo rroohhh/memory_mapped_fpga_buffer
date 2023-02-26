@@ -143,6 +143,62 @@ Finally the measurements show that the ratio between the rate of experiments wit
 \end{figure}
 
 \subsection{\FPGA{} resources usage}
+\autoref{tbl:fgpa_comp} compares the number of \FPGA{} resources used by the old with the number used by the new playback buffer design. The \FPGA{} entry list the total number of resources available on the \FPGA{} model used. Total LUTs includes LUTs used as logic LUTs, as distributed RAM and as shift register. Note that RAMB36 and RAMB18 are not separate resources, instead one RAMB36 counts as two RAMB18 and vice versa.
+The other \FPGA{} design entry gives a estimate of the number of resources used by all parts of the \FPGA{} design that were not modified. Note that this is only a estimate, as the other parts of the design are not completely independent from the modified parts and the changes ot the modified parts can influence the synthesis and packing of parts that are not modified.
+The comparison includes the \XilinxMIG{}, which is the \DDR{} controller with \AXI{} interface that is used by the playback buffer, as its configuration was modified from 4:1 clocking to 2:1 and the datawidth was halved from $\SI{256}{\bit}$ to $\SI{128}{\bit}$.
+As outlined in the table, the new playback buffer design uses more than four times the number of LUTs and FFs as the old design. However the number of resources used was not main design goal and the new playback buffer together with the other parts of the \FPGA{} design are well below the total amount of resources provided by the \FPGA{}.
+\begin{table}
+  \begin{center}
+\begin{tabular}{llllllllll}
+  \toprule
+  component & & Total LUTs & FFs  & RAMB36 & RAMB18 & DSP Blocks \\
+  \midrule
+  FPGA & & 101400 & 202800 & 325 & 650 & 600 \\
+  \midrule
+  other FPGA{} design & & 42878 & 38211 & 76 & 5 & 1 \\
+  \midrule
+  old: \\
+old playback and trace buffer &    &    4002 &    7903 &     49 &      3 &         18 \\
+old \XilinxMIG{} &                 &    6688 &    5653 &      0 &      0 &          0 \\
+total                            & &   10690 &   13556 &     49 &      3 &         18 \\
+% &  axi\_clock\_converter\_0       &     625 &    1714 &      0 &      0 &          0 \\
+% &  axi\_vfifo\_ctrl\_0            &    1547 &    3811 &     32 &      1 &         18 \\
+% &  axis\_data\_fifo\_0            &      64 &      60 &      4 &      0 &          0 \\
+% &  axis\_data\_fifo\_1            &      55 &      55 &      4 &      0 &          0 \\
+% &  axis\_dwidth\_converter\_2     &     133 &     286 &      0 &      0 &          0 \\
+% &  axis\_dwidth\_converter\_3     &     151 &     331 &      0 &      0 &          0 \\
+% &  axis\_dwidth\_converter\_4     &      24 &     337 &      0 &      0 &          0 \\
+% &  axis\_dwidth\_converter\_5     &      25 &     337 &      0 &      0 &          0 \\
+% &  axis\_interconnect\_0          &     166 &     594 &      0 &      0 &          0 \\
+% &  axis\_interconnect\_1          &     392 &     188 &      8 &      2 &          0 \\
+% &  pbmem\_i                       &     820 &     190 &      1 &      0 &          0 \\
+\midrule
+%&   total                        &   18170 &   18236 &     51 &      4 &          0 \\
+new playback and trace buffer &   &   18170 &   18236 &     51 &      4 &          0 \\
+%&   total                        &   18170 &   18236 &     51 &      4 &          0 \\
+&   \AXIDMA{}                     &    3232 &    5071 &     16 &      2 &          0 \\
+&   \AXI{} interconnect           &   13741 &   11960 &      0 &      0 &          0 \\
+&   \AXIStream{} clock converter for playback  &     104 &     206 &      0 &      0 &          0 \\
+&   \AXIStream{} clock converter for playback  &     111 &     238 &      0 &      0 &          0 \\
+&   \AXIBRAMController{}          &     278 &     364 &      0 &      0 &          0 \\
+&   \descriptor{} memory          &      30 &       7 &     32 &      0 &          0 \\
+&   \texttt{playback fifo}        &     126 &      92 &      1 &      1 &          0 \\
+&   \texttt{trace fifo}           &     127 &      92 &      1 &      1 &          0 \\
+&   \FAXI{}                       &     429 &     206 &      1 &      0 &          0 \\
+new \XilinxMIG{} &                &    4983 &    4017 &      0 &      0 &          0 \\
+total                         &   &   23153 &   22253 &     51 &      4 &          0 \\
+
+
+  \bottomrule
+\end{tabular}
+  \end{center}
+\caption{Comparison between the number of \FPGA{} resources used by the old and the new playback buffer design. The \FPGA{} entry gives the total number of resources available in this \FPGA{} model. Total LUTs counts the number of LUTs used, these can be LUTs used as logic, as distributed RAM or as shift register. Moreover note that RAMB36 is not a separate resource from RAMB18, instead one RAMB36 counts as two RAMB18 and vice versa. This overview includes the \XilinxMIG{} as it was modified from 4:1 mode to 2:1 mode and from \SI{256}{\bit} to $\SI{128}{\bit}$ data width}\label{tbl:fgpa_comp}
+\end{table}
+
+
+\todo{maybe playback and trace bw while reading the trace? (pb rate drops :(, we need priority in the interconnect)}
+
+\iffalse
 
 \begin{table}
   \begin{center}
@@ -150,8 +206,10 @@ Finally the measurements show that the ratio between the rate of experiments wit
   \toprule
   component & & Logic LUTs & LUTRAMs & SRLs &  FFs  & RAMB36 & RAMB18 & DSP Blocks \\
   \midrule
+  FPGA & & 101400 & 101
+  \midrule
   stock: \\
- hx\_fpga\_top                                      &  &      53302 &      46618 &    5580 & 1104 & 51904 &    126 &      8 &         19 \\
+total                                      &  &      53302 &      46618 &    5580 & 1104 & 51904 &    126 &      8 &         19 \\
 &    axi\_pb\_trce\_i                                    &       4002 &       3133 &     772 &   97 &  7903 &     49 &      3 &         18 \\
 &      axi\_clock\_converter\_0                          &        625 &        197 &     428 &    0 &  1714 &      0 &      0 &          0 \\
 &      axi\_vfifo\_ctrl\_0                               &       1547 &       1138 &     344 &   65 &  3811 &     32 &      1 &         18 \\
@@ -167,7 +225,7 @@ Finally the measurements show that the ratio between the rate of experiments wit
 &    c0\_u\_memc\_ui\_top\_axi                            &       6688 &       5505 &     908 &  275 &  5653 &      0 &      0 &          0 \\
 \midrule
 mmap: \\
-  hx\_fpga\_top                                        & &      66031 &      56506 &    6430 & 3095 & 60464 &    127 &      9 &          1 \\
+  total                                        & &      66031 &      56506 &    6430 & 3095 & 60464 &    127 &      9 &          1 \\
 &   arq\_pb\_trce\_i                                      &      18170 &      14268 &    1846 & 2056 & 18236 &     51 &      4 &          0 \\
 &     axi\_dma\_pb\_trce\_i                                &      17744 &      13895 &    1846 & 2003 & 18030 &     50 &      4 &          0 \\
 &       (axi\_dma\_pb\_trce\_i)                            &          7 &          7 &       0 &    0 &     0 &      0 &      0 &          0 \\
@@ -186,9 +244,5 @@ mmap: \\
 
   \bottomrule
 \end{tabular}
-  \end{center}
-\caption{Comparison between the numberf of}\label{tbl:fgpa_comp}
-\end{table}
 
-
-\todo{maybe playback and trace bw while reading the trace? (pb rate drops :(, we need priority in the interconnect)}
+\fi

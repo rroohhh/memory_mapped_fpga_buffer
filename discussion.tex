@@ -1,1 +1,34 @@
-\section{Discussion}
+\section{Summary and discussion}
+This thesis aimed to provide a new design for the playback and trace buffer that improves the old design on multiple fronts
+\begin{itemize}
+\item Usage of the complete $\SI{512}{\mebi\byte}$ of storage available
+\item The ability to reuse (parts of) already transmitted \PlaybackProgram{}s
+\item The ability to read back the trace data in a different order than it was generated.
+\end{itemize}
+To achieved these goals the operation of the playback and trace buffer was redesigned from the ground up to use memory mapped access from the host and a scatter gather \DMA{} engine to construct the stream of playback instructions from multiple (potentially out of order) blocks. A new software layer called \ayo{} that is responsible for the low level interaction with the playback and trace buffer parts, such as reads and writes to the \DDR{} memory holding the playback and trace data aswell as the configuration of the \DMA{} engine was implemented. \ayo{} exposes a interfaces that allows usage of the new functionality, like the reuse of parts of the \PlaybackProgram{}s and partial readout of the trace data. Basic integration of \ayo{} with the next higher layer of software, \hxcomm{},  was performed that allows all current software to use the new playback and trace buffer design without any modifications, gaining the ability to use the much bigger $\SI{512}{\mebi\byte}$ of storage available.
+
+This new design for the playback buffer and software integration was tested extensively and compared in detail to the old design. For these tests and comparisons, the simulation environment was extended by a software accesible \AXI{} \DRAM{} and the \FPGA{} design was extended by a dummy data generator used to generate arbitrary amounts of trace data at maximum data rate.
+
+It was verified that the software layer and memory mapped access to the \DDR{} memory is able to achieve a similar bandwidth between the host and the \FPGA{} as the old way of communication with the \FPGA{}.
+
+
+For \PlaybackProgram{}s with a size of atleast $\SI{1392}{\byte}$ and a trace data size of atleast$\SI{1392}{\byte}$ the rate of \HWinTheLoop{} style experiments that is possible with the new playback and trace buffer design was show to be less than two times lower than the rate for the old design. For any size of \PlaybackProgram{} and generated trace data, the rate of experiments was always less than $5$ times lower.
+
+It was demonstrated that the complete size of the \DDR{} memory is possible to be used instead of only $\SI{64}{\mebi\byte}$ used by the old buffer design.
+
+Finally was verified that for \PlaybackProgram{} constructed from blocks of atleast $\num{68}·\PhyWordSize{}$ and for trace data organized into blocks of atleast $\num{80}·\PhyWordSize{}$, the new playback and trace buffer always achieves the maximum possible bandwidth. This was verified to hold even for a variety of possible placements of these blocks in the \DDR{} memory space.
+This constitutes a mayor improvement over the old playback and trace buffer design, which is not able to sustain this the maximum possible bandwidth for many \PlaybackProgram{} and or trace sizes and drastically improves the reliablity.
+
+\section{Outlook}
+The new memory mapped playback and trace buffer and the software integration presented in this thesis lays a foundation for a lot of future improvements of the \BSS{} stack.
+\subsection{Higher level software integration}
+The \ayo{} software layer already exposes the new functionality of the new playback and trace buffer such as the ability to reuse block of already transmitted \PlaybackProgram{}s and partial readout of the generated trace data. However this is functionality is not yet used by the upper layer of the \BSS{} software stack. As the rate with which experiments that can be performed is limited by the bandwidth between the host and the \FPGA{} for \PlaybackProgram{}s / trace data about $\SI{1392}{\byte}$, integration of this functionality with higher level software is expected to allow the rate of experiments to be improved.
+\subsection{Latency reduction}
+For small \PlaybackProgram{}s the rate of experiments that can be performed with the new playback and trace buffer is significantly lower than the rate of experiments that can be performed with the old design. This could be improved using one of several approaches
+\begin{itemize}
+\item Usage of the interrupts provided by the \AXIDMA{} to avoid the need for polling of the trace descriptor status.
+\item Introduction of a separate low latency path for the trace data, that bypasses the playback and trace buffer and instead is sent directly to the host.
+\item Introduction of memory mapped access from the \FPGA{} to the host, to allow the \FPGA{} to write the host memory directly. This could for example be achieved by implementation of a module similar to \FAXI{} but operating is a opposite direction and providing a \AXI{} slave interface to the \FPGA{}.
+\end{itemize}
+\subsection{Unified memory with PPU}
+The \BSSTwo{} architecture includes microcontrollers on the \ASIC{} that allow for sophisticated on chip processing. They can for example be used for closed loop operation of the \ASIC{}. The \FPGA{} is connected to additional \DDR{} memory that provides the working memory for these microcontrollers. In the futures it is envisioned to allow memory mapped access to this \DDR{} by the host using \FAXI{}. Furthermore, the microcontrollers are envisioned to access to the playback and trace memory, descriptor memory and \AXIDMA{} register space aswell, to allow configuration of the directly from the microcontroller.
