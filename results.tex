@@ -1,8 +1,8 @@
-\section{Results}
+\section{Results}\label{sec:results}
 \subsection{Playback and trace bandwidth}\label{sec:pb_trace_bw}
-The playback and trace bandwidth is measured for the tree scenarios that were described in \autoref{sec:pb_trace_verif}. For the four different choices for the design of new playback and trace buffer were are compared. The following highlights the downsides of the $\PhyWordSize{}$ option for the $W$ parameter and the advantage of the \texttt{playback} as well as the \texttt{trace FIFO}.
+The playback and trace bandwidth is measured for the three scenarios that were described in \autoref{sec:pb_trace_verif}. For the four different choices for the design of new playback and trace buffer are compared. The following highlights the downsides of the $\PhyWordSize{}$ option for the $W$ parameter and the advantage of the \texttt{playback} as well as the \texttt{trace FIFO}.
 
-\autoref{fig:pb_128_no_fifo} shows the playback bandwidth for $W = \SI{128}{\bit}$ and no \texttt{playback FIFO}. As expected for small buffer lengths the maximum bandwidth cannot be achieved. \autoref{fig:pb_128_no_fifo_zoom} shows the experiment with the limits of the \(y\)-axis adjusted to show only a small region around the maximum possible bandwidth. This shows that for some buffer lengths the playback stream is not always able to achieve the maximum possible bandwidth. In fact there is no buffer length where the minimum achieved bandwidth was always equal to the maximum one.
+\autoref{fig:pb_128_no_fifo} shows the playback bandwidth for $W = \SI{128}{\bit}$ and no \texttt{playback FIFO}. As expected for small buffer lengths the maximum bandwidth cannot be achieved. \autoref{fig:pb_128_no_fifo_zoom} shows the experiment with the limits of the \(y\)-axis adjusted to show only a small region around the maximum possible bandwidth. In this case only the bandwidth for the random memory placement is shows. It is visible that for some buffer lengths the playback stream is not always able to achieve the maximum possible bandwidth. In fact there is no buffer length where the minimum achieved bandwidth was always equal to the maximum one.
 \begin{figure}[H]
 \inputpgf{data/pb_bandwidth_128_no_fifo.pgf}
 \caption{Measured bandwidth of the playback stream for $W = \SI{128}{\bit}$ and no \texttt{playback FIFO} for the three memory placements. Each tested buffer length was repeated $\num{1000}$ times and the minimum bandwidth is shown.}\label{fig:pb_128_no_fifo}
@@ -13,8 +13,8 @@ The playback and trace bandwidth is measured for the tree scenarios that were de
 \caption{Measured bandwidth of the playback stream for $W = \SI{128}{\bit}$ and no \texttt{playback FIFO} for the \random{} memory placements. Each tested buffer length was repeated $\num{1000}$ times the distribution of the measured bandwidths is visualized using a violin plot. The horizontal bars indicate the minimum and maximum measured bandwidth. The \(y\)-axis is limited to a small region around the maximum bandwidth.}\label{fig:pb_128_no_fifo_zoom}
 \end{figure}
 
-
-\autoref{fig:pb_128_fifo} shows the playback bandwidth for $W = \SI{128}{\bit}$ and using the \texttt{playback FIFO}. Again as expected for small buffer lengths the maximum bandwidth cannot be achieved. \autoref{fig:pb_128_fifo_zoom} shows the same zoomed in region as \autoref{fig:pb_128_no_fifo}. In contrast to the version without the \texttt{playback fifo} the bandwidth of the playback stream is never below the maximum bandwidth for any buffer length greater than or equal to $\num{\PBMinBSForlinear} · \PhyWordSize{}$.
+% \pagebreak
+\autoref{fig:pb_128_fifo} shows the playback bandwidth for $W = \SI{128}{\bit}$ and using the \texttt{playback FIFO}. Again as expected for small buffer lengths the maximum bandwidth cannot be achieved. \autoref{fig:pb_128_fifo_zoom} shows the same zoomed in region as \autoref{fig:pb_128_no_fifo}. In contrast to the version without the \texttt{playback fifo} the bandwidth of the playback stream is never below the maximum bandwidth for any buffer length greater than or equal to $\num{\PBMinBSForlinear} · \PhyWordSize{}$. This is true for any of the memory placement patterns tested.
 
 \begin{figure}[H]
 \inputpgf{data/pb_bandwidth_128_fifo.pgf}
@@ -26,7 +26,7 @@ The playback and trace bandwidth is measured for the tree scenarios that were de
 \caption{Measured bandwidth of the playback stream for $W = \SI{128}{\bit}$ using the \texttt{playback FIFO} for the \random{} memory placements. Each tested buffer length was repeated $\num{1000}$ times and the minimum bandwidth is shown. The \(y\)-axis is limited to a small region around the maximum bandwidth.}\label{fig:pb_128_fifo_zoom}
 \end{figure}
 
-
+% \pagebreak
 \autoref{fig:trace_128_fifo} shows the measured trace bandwidth for $W = \SI{128}{\bit}$ and no \texttt{trace FIFO}. As expected and similar to the playback stream, the maximum bandwidth is not reached for small buffer lengths. For any buffer length greater than or equal to $\num{\PBMinBSForlinear}$ the minimum bandwidth measured matches the maximum possible bandwidth.
 \begin{figure}[H]
 \inputpgf{data/trace_bandwidth_128.pgf}
@@ -43,20 +43,23 @@ The playback and trace bandwidth is measured for the tree scenarios that were de
 % pb interleaved 64.0
 % pb interleaved_dense 64.0
 
-\autoref{fig:pb_trace_64} shows the measured trace and playback bandwidths for $W = \SI{64}{\bit}$. While the playback stream is able to reach the maximum possible bandwidth for every buffer length greater than or equal to $\num{68} · \PhyWordSize$, the trace stream cannot reach the maximum bandwidth for every of the memory placement patterns. Indeed only the \linear{}, \random{} and the \randomDense{} memory placement patterns are able to achieve the maximum possible bandwidth, however they only reach it for a buffer length greater than or equal to $\num{16384} · \PhyWordSize$, $\num{2048} · \PhyWordSize$ and $\num{16384} · \PhyWordSize$ respectively.
+% \pagebreak
+\autoref{fig:pb_trace_64} shows the measured trace and playback bandwidths for $W = \SI{64}{\bit}$. While the playback stream is able to reach the maximum possible bandwidth for every buffer length greater than or equal to $\num{68} · \PhyWordSize$, the trace stream cannot reach the maximum bandwidth for every of the memory placement patterns. Indeed, only the \linear{}, \random{} and the \randomDense{} memory placement patterns are able to achieve the maximum possible bandwidth, however they only reach it for a buffer length greater than or equal to $\num{16384} · \PhyWordSize$, $\num{2048} · \PhyWordSize$ and $\num{16384} · \PhyWordSize$ respectively.
 
 \begin{figure}[H]
 \inputpgf{data/pb_trace_bandwidth_64.pgf}
 \caption{Measured bandwidth of the playback and trace stream for $W = \SI{64}{\bit}$. Each tested buffer length was repeated $\num{1000}$ times and the minimum bandwidth measured is shown. The color of the points encodes the memory placement pattern that was used.}\label{fig:pb_trace_64}
 \end{figure}
 
-\autoref{fig:pb_trace_128} shows the measured trace and playback bandwidths using the \texttt{playback FIFO} but without the \texttt{trace FIFO} for $W = \SI{128}{\bit}$. The playback stream is able to reach the maximum possible bandwidth for every buffer length greater than or equal to $\num{68} · \PhyWordSize$, and in contrast to the $W = \SI{64}{\bit}$ the trace stream can reach the maximum bandwidth for every of the memory placement patterns. However it is only reached for all memory access pattern for buffer lengths greater than or equal to $\num{720} · \PhyWordSize$.
+% \pagebreak
+\autoref{fig:pb_trace_128} shows the measured trace and playback bandwidths using the \texttt{playback FIFO} but without the \texttt{trace FIFO} for $W = \SI{128}{\bit}$. The playback stream is able to reach the maximum possible bandwidth for every buffer length greater than or equal to $\num{68} · \PhyWordSize$, and in contrast to the $W = \SI{64}{\bit}$ the trace stream can reach the maximum bandwidth for every of the memory placement patterns. However, it is only reached for all memory access pattern for buffer lengths greater than or equal to $\num{720} · \PhyWordSize$.
 \begin{figure}[H]
 \inputpgf{data/pb_trace_bandwidth_128_fifo.pgf}
 \caption{Measured bandwidth of the playback and trace stream for $W = \SI{128}{\bit}$ with the \texttt{playback FIFO} and without the \texttt{trace FIFO}. Each tested buffer length was repeated $\num{1000}$ times and the minimum bandwidth measured is shown. The color of the points encodes the memory placement pattern that was used.}\label{fig:pb_trace_128}
 \end{figure}
 
-Finally \autoref{fig:pb_trace_128_both_fifo} shows the measured trace and playback bandwidths using the \texttt{playback FIFO} together with the \texttt{trace FIFO} for $W = \SI{128}{\bit}$. As without the \texttt{trace FIFO} the playback stream is able to reach the maximum bandwidth for any buffer length greater than or equal to $\num{68} · \PhyWordSize$ however the minimum buffer length required to reach the maximum bandwidth on the trace stream is reduced to $80 · \PhyWordSize$.
+% \pagebreak
+Finally, \autoref{fig:pb_trace_128_both_fifo} shows the measured trace and playback bandwidths using the \texttt{playback FIFO} together with the \texttt{trace FIFO} for $W = \SI{128}{\bit}$. As without the \texttt{trace FIFO} the playback stream is able to reach the maximum bandwidth for any buffer length greater than or equal to $\num{68} · \PhyWordSize$ however the minimum buffer length required to reach the maximum bandwidth on the trace stream is reduced to $80 · \PhyWordSize$.
 
 \begin{figure}[H]
 \inputpgf{data/pb_trace_bandwidth_128_both_fifo.pgf}
@@ -68,7 +71,7 @@ For the following experiments only the version with $W = \SI{128}{\bit}$ and bot
 
 \autoref{fig:pb_vs_stock}, \autoref{fig:trace_vs_stock} and \autoref{fig:pb_trace_vs_stock} show comparisons between the playback, trace and simultaneous playback and trace bandwidth depending on the size of the \PlaybackProgram{} and or generated trace data. These bandwidths are measured using a modification of the tests described in \autoref{sec:pb_trace_verif}. Instead of using the maximum number of \descriptor{}s possible the minimum number of \descriptor{}s that are needed to hold the complete \PlaybackProgram{} trace data is used.
 
-The old playback and trace bufer design is not able to achieve the maximum bandwidth for many of the tested \PlaybackProgram{} and or trace data sizes. This is expected for very large trace data and \PlaybackProgram{}s, as it is only able to store $\SI{32}{\mebi\byte}$ of trace data and \PlaybackProgram{} instructions. \PlaybackProgram{}s greater than $\SI{32}{\mebi\byte}$ are limited by the bandwidth between the host and the \FPGA{} as the instructions for them will be transmitted during their execution. The same applies to trace data bigger than $\SI{32}{\mebi\byte}$, which is only accepted from the \pbexec{} at the rate it can be sent to the host.
+The old playback and trace buffer design is not able to achieve the maximum bandwidth for many of the tested \PlaybackProgram{} and or trace data sizes. This is expected for very large trace data and \PlaybackProgram{}s, as it is only able to store $\SI{32}{\mebi\byte}$ of trace data and \PlaybackProgram{} instructions. \PlaybackProgram{}s greater than $\SI{32}{\mebi\byte}$ are limited by the bandwidth between the host and the \FPGA{} as the instructions for them will be transmitted during their execution. The same applies to trace data bigger than $\SI{32}{\mebi\byte}$, which is only accepted from the \pbexec{} at the rate it can be sent to the host.
 In addition to that these measurements also reveal that the old playback and trace buffer design is not able to achieve the full playback and trace bandwidth for \PlaybackProgram{}s and or trace data smaller than $\SI{32}{\mebi\byte}$.
 The new playback and trace buffer design achieves the maximum bandwidth regardless of the size of the \PlaybackProgram{} and or generated trace data and therefore is there able to execute \PlaybackProgram{}s with strictly deterministic timing compared to the old playback and trace buffer.
 \begin{figure}[H]
@@ -90,7 +93,7 @@ The new playback and trace buffer design achieves the maximum bandwidth regardle
 The \rtt{} and the bandwidth of the \FAXI{} based \AXI{} Manager over \HostARQ{} is measured. All measurements were performed from the same host computer (\testnode{}) reserved exclusively for these tests.
 To measure the \rtt{} minimum size reads and write of $\SI{8}{\byte}$ from multiple \AXI{} Subordinates is performed. For reads the time elapsed between the transmission of the header and address and the reception of the read data is measured, while for writes the time elapsed between the transmission of the write transaction and the reception of the write response is measured. The measured \rtt{} can is visualized in \autoref{fig:faxi_rtt} and table \autoref{tbl:rtt} summarizes the average latency that was measured.
 
-\begin{table}
+\begin{table}[H]
   \begin{center}
 \begin{tabular}{lll}
   \toprule
@@ -126,15 +129,15 @@ The bandwidth for reads and write to the \DDR{} memory was measured for differen
 \end{figure}
 
 \subsection{Experiment rate}
-Finally the rate of experiments that can be performed in a \HWinTheLoop{} fashion is measured. The experiment that was used to test this is the same one used to determine the simultaneous playback and trace stream bandwidth and the size of the \PlaybackProgram{} and the generated trace data is varied. \autoref{fig:experimentrate} shows a comparison between the experiment rate that is achieved using the playback and trace buffer design presented in this thesis and the old playback and trace buffer design. To determine the rate, the duration of the execution of a single experiment including the creating of the \PlaybackProgram{} and the reception of the trace data is measured. As can be seen in \autoref{fig:experimentrate} as expected for very small \PlaybackProgram{}s the \rtt{} dominates the time required to perform an experiment and the new playback and trace buffer design is at least two times slower than old playback and trace buffer design (because it needs at least two round trips to perform a single experiment). Furthermore the experiment rate using the new trace and playback buffer design is always lower than the old one as the trace data is only read out once experiment is completed. Before that it is not know how much trace data was actually generated and written to the \DDR{} memory by the \AXIDMA{}. The old trace and playback buffer design is able to send the trace data to the host while it is generated instead. As the experiment rate is mainly limited by the bandwidth of the connection between the host and the \FPGA{} the effect of these differences deceases with increasing playback and trace size until the rate for the new and the old is very close.
-Finally the measurements show that the ratio between the rate of experiments with the old and the new playback buffer design increases again for the old trace and playback buffer desgin for \PlaybackProgram{}s that are larger than $\SI{32}{\mebi\byte}$. This is caused by the playback memory in the old playback and trace buffer design being filled up for \PlaybackProgram{}s that are larger than $\SI{32}{\mebi\byte}$ which causes the execution of the \PlaybackProgram{} to be started before it is received completely and the transmission of the playback program from the host and the execution overlap. The new playback and trace buffer can use the whole size of the \DDR{} memory and the execution of the \PlaybackProgram{} is not started until it is received completely.
+At last the rate of experiments that can be performed in a \HWinTheLoop{} fashion is measured. The experiment that was used to test this is the same one used to determine the simultaneous playback and trace stream bandwidth and the size of the \PlaybackProgram{} and the generated trace data is varied. \autoref{fig:experimentrate} shows a comparison between the experiment rate that is achieved using the playback and trace buffer design presented in this thesis and the old playback and trace buffer design. To determine the rate, the duration of the execution of a single experiment including the creating of the \PlaybackProgram{} and the reception of the trace data is measured. As can be seen in \autoref{fig:experimentrate} as expected for very small \PlaybackProgram{}s the \rtt{} dominates the time required to perform an experiment and the new playback and trace buffer design is at least two times slower than old playback and trace buffer design (because it needs at least two round trips to perform a single experiment). Furthermore, the experiment rate using the new trace and playback buffer design is always lower than the old one as the trace data is only read out once experiment is completed. Before that it is not know how much trace data was actually generated and written to the \DDR{} memory by the \AXIDMA{}. The old trace and playback buffer design is able to send the trace data to the host while it is generated instead. As the experiment rate is mainly limited by the bandwidth of the connection between the host and the \FPGA{} the effect of these differences deceases with increasing playback and trace size until the rate for the new and the old is very close.
+Finally, the measurements show that the ratio between the rate of experiments with the old and the new playback buffer design increases again for the old trace and playback buffer design for \PlaybackProgram{}s that are larger than $\SI{32}{\mebi\byte}$. This is caused by the playback memory in the old playback and trace buffer design being filled up for \PlaybackProgram{}s that are larger than $\SI{32}{\mebi\byte}$ which causes the execution of the \PlaybackProgram{} to be started before it is received completely and the transmission of the playback program from the host and the execution overlap. The new playback and trace buffer can use the whole size of the \DDR{} memory and the execution of the \PlaybackProgram{} is not started until it is received completely.
 \begin{figure}[H]
 \inputpgf{data/experiment_rate.pgf}
 \caption{Comparison of the rate of experiments between the old and the new playback and trace buffer. For each size the time required to perform a single experiment was measured $\num{100}$ times. In green the ration between the experiment rate of the old and the new playback and trace buffer design is shown. The vertical line indicates the location of $\SI{32}{\mebi\byte}$ on the $x$-axis}\label{fig:experimentrate}
 \end{figure}
 
 \subsection{flange-dram performance}
-\autoref{fig:flange_perf} shows a comparison between the time that is required to perform a test case part of the \hxcomm{} test suite that reads the \JTAGID{} of the \ASIC{} when using the simulation backend of \hxcomm{} depending on the \AXI{} \DDR{} simulation model used. For this test \xcelium{} with version \xceliumVer{} was used. The test case is performed $\num{10}$ times in sequence and each repetition is shown separately. One can see that the \XilinxMIG{} and \DDR{} based simulation is a lot slower than the other two options. Furthermore the first repetition of the test case requires almost double the time of all following repetitions, when using the \XilinxMIG{} based simulation. This is caused by the link training that is performed before the \XilinxMIG{} can operate. The other two simulation models do not require this link training phase. On average one execution of the test case requires \MeanStdValue{DramAll}{\second} for the \XilinxMIG{} and \DDR{} simulation model option, \MeanStdValue{FlangeDram}{\second} when using \flangedram{} and \MeanStdValue{SimBram}{\second} when using the simulation model using block ram.
+\autoref{fig:flange_perf} shows a comparison between the time that is required to perform a test case part of the \hxcomm{} test suite that reads the \JTAGID{} of the \ASIC{} when using the simulation backend of \hxcomm{} depending on the \AXI{} \DDR{} simulation model used. For this test \xcelium{} with version \xceliumVer{} was used. The test case is performed $\num{10}$ times in sequence and each repetition is shown separately. One can see that the \XilinxMIG{} and \DDR{} based simulation is a lot slower than the other two options. Furthermore, the first repetition of the test case requires almost double the time of all following repetitions, when using the \XilinxMIG{} based simulation. This is caused by the link training that is performed before the \XilinxMIG{} can operate. The other two simulation models do not require this link training phase. On average one execution of the test case requires \MeanStdValue{DramAll}{\second} for the \XilinxMIG{} and \DDR{} simulation model option, \MeanStdValue{FlangeDram}{\second} when using \flangedram{} and \MeanStdValue{SimBram}{\second} when using the simulation model using block ram.
 
 
 \begin{figure}[H]
@@ -144,21 +147,21 @@ Finally the measurements show that the ratio between the rate of experiments wit
 
 \subsection{\FPGA{} resources usage}
 \autoref{tbl:fgpa_comp} compares the number of \FPGA{} resources used by the old with the number used by the new playback buffer design. The \FPGA{} entry list the total number of resources available on the \FPGA{} model used. Total LUTs includes LUTs used as logic LUTs, as distributed RAM and as shift register. Note that RAMB36 and RAMB18 are not separate resources, instead one RAMB36 counts as two RAMB18 and vice versa.
-The other \FPGA{} design entry gives a estimate of the number of resources used by all parts of the \FPGA{} design that were not modified. Note that this is only a estimate, as the other parts of the design are not completely independent from the modified parts and the changes ot the modified parts can influence the synthesis and packing of parts that are not modified.
+The other \FPGA{} design entry gives an estimate of the number of resources used by all parts of the \FPGA{} design that were not modified. Note that this is only an estimate, as the other parts of the design are not completely independent of the modified parts and the changes ot the modified parts can influence the synthesis and packing of parts that are not modified.
 The comparison includes the \XilinxMIG{}, which is the \DDR{} controller with \AXI{} interface that is used by the playback buffer, as its configuration was modified from 4:1 clocking to 2:1 and the datawidth was halved from $\SI{256}{\bit}$ to $\SI{128}{\bit}$.
-As outlined in the table, the new playback buffer design uses more than four times the number of LUTs and FFs as the old design. However the number of resources used was not main design goal and the new playback buffer together with the other parts of the \FPGA{} design are well below the total amount of resources provided by the \FPGA{}.
+As outlined in the table, the new playback buffer design uses more than four times the number of LUTs and FFs as the old design. However, the number of resources used was not main design goal and the new playback buffer together with the other parts of the \FPGA{} design are well below the total amount of resources provided by the \FPGA{}.
 \begin{table}
   \begin{center}
-\begin{tabular}{llllllllll}
+\begin{tabular}{Cl Cl *{5}{S[table-format=5.0]}}
   \toprule
-  component & & Total LUTs & FFs  & RAMB36 & RAMB18 & DSP Blocks \\
+  component & & {Total LUTs} & {FFs}  & {RAMB36} & {RAMB18} & {DSP Blocks}   \\
   \midrule
   FPGA & & 101400 & 202800 & 325 & 650 & 600 \\
   \midrule
   other FPGA{} design & & 42878 & 38211 & 76 & 5 & 1 \\
   \midrule
   old: \\
-old playback and trace buffer &    &    4002 &    7903 &     49 &      3 &         18 \\
+\makecell{old playback\\and trace\\buffer} &    &    4002 &    7903 &     49 &      3 &         18 \\
 old \XilinxMIG{} &                 &    6688 &    5653 &      0 &      0 &          0 \\
 total                            & &   10690 &   13556 &     49 &      3 &         18 \\
 % &  axi\_clock\_converter\_0       &     625 &    1714 &      0 &      0 &          0 \\
@@ -174,12 +177,12 @@ total                            & &   10690 &   13556 &     49 &      3 &      
 % &  pbmem\_i                       &     820 &     190 &      1 &      0 &          0 \\
 \midrule
 %&   total                        &   18170 &   18236 &     51 &      4 &          0 \\
-new playback and trace buffer &   &   18170 &   18236 &     51 &      4 &          0 \\
+\makecell{new playback\\and trace\\buffer} &   &   18170 &   18236 &     51 &      4 &          0 \\
 %&   total                        &   18170 &   18236 &     51 &      4 &          0 \\
 &   \AXIDMA{}                     &    3232 &    5071 &     16 &      2 &          0 \\
 &   \AXI{} interconnect           &   13741 &   11960 &      0 &      0 &          0 \\
-&   \AXIStream{} clock converter for playback  &     104 &     206 &      0 &      0 &          0 \\
-&   \AXIStream{} clock converter for playback  &     111 &     238 &      0 &      0 &          0 \\
+&   \makecell{\AXIStream{}\\clock converter\\for playback}  &     104 &     206 &      0 &      0 &          0 \\
+&   \makecell{\AXIStream{}\\clock converter\\for trace}  &     111 &     238 &      0 &      0 &          0 \\
 &   \AXIBRAMController{}          &     278 &     364 &      0 &      0 &          0 \\
 &   \descriptor{} memory          &      30 &       7 &     32 &      0 &          0 \\
 &   \texttt{playback fifo}        &     126 &      92 &      1 &      1 &          0 \\
@@ -196,7 +199,7 @@ total                         &   &   23153 &   22253 &     51 &      4 &       
 \end{table}
 
 
-\todo{maybe playback and trace bw while reading the trace? (pb rate drops :(, we need priority in the interconnect)}
+% \todo{maybe playback and trace bw while reading the trace? (pb rate drops :(, we need priority in the interconnect)}
 
 \iffalse
 

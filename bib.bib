@@ -77,9 +77,8 @@
   doi={10.1109/IEEESTD.2007.4299594}}
 
 
-@ARTICLE{ref:dpi, crossref={ref:systemverilog}}
-@ARTICLE{ref:vpi, crossref={ref:systemverilog}}
 @ARTICLE{ref:systemverilog,
+  IDS={ref:dpi,ref:vpi},
   author={},
   journal={IEEE Std 1800-2017 (Revision of IEEE Std 1800-2012)},
   title={IEEE Standard for SystemVerilog--Unified Hardware Design, Specification, and Verification Language},
@@ -128,7 +127,15 @@
 
 @ARTICLE{ref:spinnaker, crossref={mayr2019spinnaker}}
 
-@TECHREPORT{ref:network_accelerator, crossref={mueller2020bss2ll}}
-@TECHREPORT{ref:bss_cube, crossref={mueller2020bss2ll}}
+@TECHREPORT{ref:network_accelerator, crossref={mueller2020bss2ll}, IDS={ref:bss_cube}}
 @ARTICLE{ref:adex, crossref={brette2005adaptive}}
 @ARTICLE{ref:mobile_system, crossref={stradmann2022demonstrating}}
+
+@techreport{ref:ddr3_standard,
+	title = {{DDR3} {SDRAM} {SPECIFICATION}},
+	url = {https://www.jedec.org/standards-documents/docs/jesd-79-3f},
+	author = {JEDEC},
+	year = {2012},
+}
+
+@ARTICLE{ref:rcf, crossref={RCF}}

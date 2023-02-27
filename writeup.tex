@@ -1,6 +1,6 @@
 %&header
 
-\documentclass[a4paper,DIV=14]{scrartcl}
+\documentclass[a4paper,DIV=15]{scrartcl}
 
 
 \usepackage{amsmath}
@@ -18,7 +18,7 @@
 
 \usepackage{todonotes}
 \usepackage{hyperref}
-\usepackage[binary-units,separate-uncertainty=true,round-mode=uncertainty]{siunitx}
+\usepackage[binary-units,separate-uncertainty=true,round-mode=uncertainty,input-digits={0123456789ABCDEF}]{siunitx}
 
 \usepackage{tikz}
 
@@ -31,8 +31,21 @@
 \usepackage{xstring}
 \usepackage{newunicodechar}
 
+\usepackage[column=C]{cellspace}
+
+\usepackage[bottom=2.5cm,top=2.0cm,left=2.4cm,right=2.4cm]{geometry}
+
+\cellspacetoplimit4pt
+\cellspacebottomlimit4pt
+
+
 
 \usepackage[toc]{glossaries}
+
+\renewcommand\cellalign{lc}
+
+\ExecuteBibliographyOptions{mincrossrefs=100}
+
 \makeglossaries
 
 % \usepackage{nomencl}
@@ -47,7 +60,7 @@
 % \usepackage{makeidx}                              % index of key words
 % \makeindex
 
-\raggedbottom%
+% \raggedbottom%
 
 \providecommand*{\listingautorefname}{Listing}
 
@@ -70,7 +83,6 @@
 \StrSubstitute{#1}{/}{-}[\filename]\StrSubstitute{\filename}{.}{-}[\filenameNew]\tikzsetnextfilename{\filenameNew}%
 \begin{tikzpicture}\node[inner sep=0pt]{\input{#1}};\end{tikzpicture}%
 }%
-
 
 \definecolor{color0}{HTML}{1f77b4}  % blue
 \definecolor{color1}{HTML}{ff7f0e}  % orange
