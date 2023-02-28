@@ -17,15 +17,14 @@
 \usepackage{fancyvrb}
 
 \usepackage{todonotes}
-\usepackage{hyperref}
-\usepackage[binary-units,separate-uncertainty=true,round-mode=uncertainty,input-digits={0123456789ABCDEF}]{siunitx}
+\usepackage[hidelinks]{hyperref}
 
 \usepackage{tikz}
 
 \usepackage{crimson}
 \usepackage{newtxmath}
 \usepackage{polyglossia}
-\usepackage[backend=biber]{biblatex}
+\usepackage[style=authoryear,backend=biber]{biblatex}
 \usepackage{microtype}
 \usepackage{minted}
 \usepackage{xstring}
@@ -34,6 +33,8 @@
 \usepackage[column=C]{cellspace}
 
 \usepackage[bottom=2.5cm,top=2.0cm,left=2.4cm,right=2.4cm]{geometry}
+
+\usepackage[detect-all,binary-units,separate-uncertainty=true,round-mode=uncertainty,input-digits={0123456789ABCDEF}]{siunitx}
 
 \cellspacetoplimit4pt
 \cellspacebottomlimit4pt
@@ -60,7 +61,7 @@
 % \usepackage{makeidx}                              % index of key words
 % \makeindex
 
-% \raggedbottom%
+\raggedbottom%
 
 \providecommand*{\listingautorefname}{Listing}
 

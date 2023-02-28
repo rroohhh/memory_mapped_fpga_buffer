@@ -1,36 +1,37 @@
 \section{Background}
 The main interface of the \HICANNX{} \ASIC{} is a set of $\num{16}$ \LVDS{} lanes. Over these \LVDS{} lanes configuration of the parameters controlling the operation of the chip such as configuration of the synapse connections and the neuron parameters as well as neuron events are transmitted. These neuron events can be inputs from sources external to the \ASIC{} to the network of neurons and synapses as well as events generated on the \ASIC{} and transmitted to external sinks.
-This communication of events happens in a real-time fashion. The time continuous analog emulation performed by the \ASIC{} cannot be paused and continued arbitrarily. To facilitate this real-time communication  an \FPGA{} is used. This thesis will focus mainly on the network attached accelerator deployment. In this case the \FPGA{} is connected to a host computer over a network connection.
+This communication of events happens in a real-time fashion as the time continuous analog emulation performed by the \ASIC{} cannot be paused and continued arbitrarily. To facilitate this real-time communication  an \FPGA{} is used. This thesis will focus mainly on the network attached accelerator deployment. In this case the \FPGA{} is connected to a host computer over a network connection.
 
 The real-time communication with the \ASIC{}, especially the transmission and reception of neuron events, requires precise timing\autocite{ref:precise_timing}.
-To achieve this precise timing  an \FPGA{} is used to send neuron events to the \ASIC{} with precise timing and timestamp received events. The precise scheduling of event transmission and the timestamping of the received events on the \FPGA{} is performed by the \pbexec{} module on the \FPGA{}.
-To perform an experiment the host computer generates a sequence of instructions that among the operations necessary to configure the \ASIC{} includes instructions that contain information about the events and the timing of the events that are to be transmitted to the \ASIC{}. This sequence of instructions, called \PlaybackProgram{}, is then processed by the \pbexec{} with a timing resolution of $\SI{8}{\nano\second}$.
+To achieve this precise timing an \FPGA{} is used to send neuron events to the \ASIC{} and timestamp received events. The scheduling of event transmission and the timestamping of the received events on the \FPGA{} is performed by the \pbexec{} module on the \FPGA{}.
+To perform an experiment the host computer generates a sequence of instructions. This sequence of instructions contains the operations necessary to configure the \ASIC{} and contains instructions that control the timing and content of events to be transmitted to the \ASIC{}.
+This sequence of instructions, called \PlaybackProgram{}, is then processed by the \pbexec{} with a timing resolution of $\SI{8}{\nano\second}$.
 Events received from the \ASIC{} are timestamped with the same resolution.
 
 The high speed interface of the \ASIC{} is made up out of sixteen \LVDS{} lanes, eight for each direction that are able to operate at up to $\SI{2}{\giga\bit\per\second}$ for a total of $\SI{16}{\giga\bit\per\second}$ of full duplex bandwidth.
 
-The current network attached accelerator deployment used by the Electronic Vision(s) group called \BSSTwo{}-Cube\autocite{ref:bss_cube} uses a \Xilinx{} \Kintex7{} \FPGA{} and \LVDS{} lanes of the \ASIC{} are operated at $\SI{1}{\giga\bit\per\second}$. The host and the \FPGA{} communicate using the \UDP{} protocol over \Gigabitethernet{}. The \HostARQ{}\autocite{ref:hostarq} protocol is used to ensure reliable and ordered transmission of a stream of \PhyWordSize{} words over the unreliable and unordered \UDP{} protocol.
+The current network attached accelerator deployment used by the Electronic Vision(s) group called \BSSTwo{}-Cube\autocite{ref:bss_cube} uses a \Xilinx{} \Kintex7{} \FPGA{} and \LVDS{} lanes of the \ASIC{} are operated at $\SI{1}{\giga\bit\per\second}$. The host and the \FPGA{} communicate using the \UDP{} protocol over \Gigabitethernet{}. A custom automatic repeat request (ARQ) protocol\autocite{ref:hostarq} developed by the Electronic Vision(s) group is used to ensure reliable and ordered transmission of a stream of \PhyWordSize{} words over the unreliable and unordered \UDP{} protocol. In this thesis this protocol will be called \HostARQ{} hereafter.
 
-Because the bandwidth between the host computer and the \FPGA{} is far smaller than the bandwidth between the \FPGA{} and the \ASIC{} the \PlaybackProgram{} as well as the received neuron events need to be buffered by the \FPGA{}. This is aided by the connection of the \FPGA{} to a large external \DDR{} memory.
+Because the bandwidth between the host computer and the \FPGA{} is far smaller than the bandwidth between the \FPGA{} and the \ASIC{} the \PlaybackProgram{} as well as the received neuron events need to be buffered by the \FPGA{}. This is aided by the connection of the \FPGA{} to a external \DDR{} memory with a size of \DDRSIZE{}.
 \autoref{fig:schematic_overview} gives an overview over the interaction between the host computer, the \FPGA{} and its communication with the \HICANNX{} \ASIC{}.
 
-In the following \autoref{sec:interfaces} and \autoref{sec:pb_exec} a more detailed overview of the \FPGA{} design and especially the \pbexec{} is given. Afterwards \autoref{sec:old-pb-trace-management} gives a detailed description of the current buffer implementation for the \PlaybackProgram{} and the neuron events. It furthermore outlines the general requirements this buffer such as the required data rate and highlights the problems of the current implementation.
+In the following \autoref{sec:interfaces} and \autoref{sec:pb_exec} a more detailed overview of the \FPGA{} design and especially the \pbexec{} is given. Afterwards \autoref{sec:old-pb-trace-management} gives a detailed description of the current buffer implementation for the \PlaybackProgram{} and the neuron events. It furthermore outlines the general requirements of this buffer such as the required data rate and highlights the problems of the current implementation.
 
-These requirements are used to design a new implementation of the buffer for the \PlaybackProgram{} and the neuron events described in \autoref{sec:impl}. Finally, \autoref{sec:results} will compare the old the new buffer implementation in detail.
+These requirements are used to design a new implementation of the buffer for the \PlaybackProgram{} and the neuron events described in \autoref{sec:impl}. Finally, \autoref{sec:results} will compare the old and new buffer implementation in detail.
 
 \begin{figure}
 \centerline{\includegraphics{diagrams/cropped/fpga_overview}}
-\caption{Schematic overview of the FPGA design facilitating the communication between a network attached host computer and a \HICANNX{} \ASIC{}. The host computer communicates with the \FPGA{} using the \UDP{} based \HostARQ{} protocol. The \PlaybackProgram{}s received by the \FPGA{} are stored in the playback and trace buffer and executed using the \pbexec{}. Execution by the \pbexec{} generates events and control messages that are transmitted to the \ASIC{}. Events received from the \ASIC{} are timestamped by the \pbexec{} and stored in the trace buffer until they are sent to the host.}\label{fig:schematic_overview}
+\caption{Schematic overview of the FPGA design facilitating the communication between a network attached host computer and a \HICANNX{} \ASIC{}. The host computer communicates with the \FPGA{} using the \UDP{} based \HostARQ{} protocol. The \PlaybackProgram{}s received by the \FPGA{} are stored in the playback and trace buffer and are executed using the \pbexec{}. Execution by the \pbexec{} generates events and control messages that are transmitted to the \ASIC{}. Events received from the \ASIC{} are timestamped by the \pbexec{} and stored in the trace buffer until they are sent to the host.}\label{fig:schematic_overview}
 \end{figure}
 
 
 \subsection{\AXI{} and stream interfaces}\label{sec:interfaces}
 \subsubsection{Stream-Interfaces}
-Many components of the old and the new \FPGA{} design are connected using stream interfaces. Stream interfaces provide a unidirectional transfer of data from one component to another.
-Throughout this thesis two different stream interfaces, \AXIStream{} and the \ValidNextStream{} will be encountered. \AXIStream{} is a standard interface used by many of the components provided by \Xilinx{} used by the old and the new buffer design and the \ValidNextStream{} is used by many of the components developed by the Electronic Vision(s) group, such as the \pbexec{}.
+Many components of the old and the new \FPGA{} design are connected using stream interfaces. Stream interfaces provide an unidirectional transfer of data from one component to another.
+Throughout this thesis two different stream interfaces, \AXIStream{} and the \ValidNextStream{} will be encountered.
+The \AXIStream{} interface is a standard interface used by many of the components provided by \Xilinx{} used by the old and the new buffer design. The \ValidNextStream{} interface is used by many of the components developed by the Electronic Vision(s) group, such as the \pbexec{}.
 
-\AXIStream{}\autocite{ref:axi_stream}, a standard interface used by many components provided by \Xilinx{}.
-\AXIStream{} is a unidirectional data stream, that connects a single Transmitter to a single Receiver. An \AXIStream{} consists of at least five signals:
+The \AXIStream{} interface connects a single Transmitter to a single Receiver to transport a unidirectional data stream from the Transmitter to the Receiver . An \AXIStream{} consists of at least five signals:
 \begin{itemize}
     \item \ACLK{} is the clock signal used by the stream. All other signals will be sampled on the rising edge of this clock.
     \item \ARESETn{} is the reset signal used by the stream. It is active low.
@@ -51,28 +52,28 @@ The second stream type encountered in this thesis is used by many of the compone
 This is a single bit signal driven by the Reciever to indicate that the current data was processed, and the Transmitter can present the next data word on \TDATA{}. Furthermoren it has different rules regarding \TVALID{} and \NEXT{} compared to the rules of regarding \TVALID{} and \TREADY{}.
 For a \ValidNextStream{} the Transmitter is allowed to wait until the Receiver drives \NEXT{} high before asserting \TVALID{}.
 
-This different rule set means that in general a \AXIStream{} and a \ValidNextStream{} cannot be connected together by simply connecting the \TREADY{} and the \NEXT{} signals as they can deadlock. For example when connecting a \ValidNextStream{} Transmitter to a \AXIStream{} Receiver, the \ValidNextStream{} Transmitter is allowed to wait until the \AXIStream{} Receiver drives \TREADY{} (connected to \NEXT{}) until it drives \TVALID{}. However, the \AXIStream{} Receiver is allowed to wait until \TVALID{} is driven high before asserting \TREADY{}. In this case both the Receiver and the Transmitter will wait forever, and no progress will be made. This means when connecting a \ValidNextStream{} Transmitter to a \AXIStream{} Receiver, one has to use a \AXIStream{} Receiver that will assert \TREADY{} without waiting until \TVALID{} is asserted by the Transmitter. Connecting incompatible Receivers and Transmitters can be achieved by inserting a suitable adapter, like a \SKIDBuffer{}.
+This different rule set means that in general an \AXIStream{} and a \ValidNextStream{} cannot be connected together by simply connecting the \TREADY{} and the \NEXT{} signals as they can deadlock. For example when connecting a \ValidNextStream{} Transmitter to an \AXIStream{} Receiver, the \ValidNextStream{} Transmitter is allowed to wait until the \AXIStream{} Receiver drives \TREADY{} (connected to \NEXT{}) until it drives \TVALID{}. However, the \AXIStream{} Receiver is allowed to wait until \TVALID{} is driven high before asserting \TREADY{}. In this case both the Receiver and the Transmitter will wait forever, and no progress will be made. This means when connecting a \ValidNextStream{} Transmitter to an \AXIStream{} Receiver, one has to use an \AXIStream{} Receiver that will assert \TREADY{} without waiting until \TVALID{} is asserted by the Transmitter. Connecting incompatible Receivers and Transmitters can be achieved by inserting a suitable adapter, like a \SKIDBuffer{}.
 
 \subsubsection{AXI}\label{sec:AXI}
-\AXI{}\autocite{ref:axi} is a standard protocol used for communication between some components of the \FPGA{} design. It allows for communication between a single Manager and a Subordinate. Compared to a stream interface it provides bidirectional data transport and additional signals controlling source and target of the data that is transmitted. The \DDR{} controller providing access to the \DDR{} memory uses the \AXI{} interface.
+\AXI{}\autocite{ref:axi} is a standard protocol used for communication between some components of the \FPGA{} design. It allows for communication between a single Manager and a Subordinate. Compared to a stream interface it provides bidirectional data transport and additional signals controlling source and target of the data that is transmitted. While the old playback and trace buffer designtIt is only used for communication between the \DDR{} controller and the playback and trace buffer, it will be used for more components in the new playback and trace buffer design.
 The basic operations of the \AXI{} protocol are memory mapped read and write transactions.
-The \AXI{} protocol uses a \ACLK{} and a \ARESETn{} signal that play the same role as they do in a \AXIStream{} as well as five independent channels:
+The \AXI{} protocol uses an \ACLK{} and an \ARESETn{} signal that play the same role as they do in an \AXIStream{} as well as five independent channels:
 \begin{itemize}
-  \item The \AW{} channel transmits information about an write from the Manager to the Subordinate. This information contains the address and the number of words that will be written (the \burstsize{}).
+  \item The \AW{} channel transmits information about a write from the Manager to the Subordinate. This information contains the address and the number of words that will be written (the \burstsize{}).
   \item The \AR{} channel transmits information about a read from the Manager to the Subordinate. This information contains the address and the number of words that should be read (the \burstsize{}).
   \item The \W{} channel transmits the data that is written from the Manager to the Subordinate.
   \item The \R{} channel transmits the data that is read from the Subordinate to the Manager.
-  \item The \B{} channel transmits a response that contains the result of an write from the Subordinate to the Manager
+  \item The \B{} channel transmits a response that contains the result of a write from the Subordinate to the Manager
 \end{itemize}
-Each of these channels uses the same handshaking signals \READY{} and \VALID{} as well as rules of a \AXIStream{}. Furthermore, the \W{} and \R{} channels use a \LAST{} signal to indicate the last word of a burst.
+Each of these channels uses the same handshaking signals \READY{} and \VALID{} as well as rules of an \AXIStream{}. Furthermore, the \W{} and \R{} channels use a \LAST{} signal to indicate the last word of a burst.
 
-Using these five chnanels read and write transactions are performed. A read transaction is initiated by the Manager by transmitting the address and the number of words that should be read on the \AR{} channel. The subordinate then responds with the corresponding data on the \R{} channel. An write transaction transmits the address that should be written to and the number of words that should be written on the \AW{} channel  and the data that should be written on the \W{} channel. The Subordinate responds with the result of an write transaction one the \B{} channel once it is completed.
+Using these five channels read and write transactions are performed. A read transaction is initiated by the Manager by transmitting the address and the number of words that should be read on the \AR{} channel. The subordinate then responds with the corresponding data on the \R{} channel. A write transaction transmits the address that should be written to and the number of words that should be written on the \AW{} channel  and the data that should be written on the \W{} channel. The Subordinate responds with the result of a write transaction one the \B{} channel once it is completed.
 
 Every channel operates separately from each other. This means that for example the data to be written can be transmitted by the Manager on the \W{} channel before the address information is transmitted on the \AW{} channel. A Manager is also allowed to transmit a second read on the \AR{} channel before having received the answer to the first.
 From this it follows that the maximum data rate supported by the bus specification is a single data word each clock cycle on both the read and write channels. The actual achievable data rate depends on the specific implementation of the Manager and the Subordinate.
 
 \subsection{Playback Executor}\label{sec:pb_exec}
-The \pbexec{} is responsible for processing the instruction stream that is received from the playback buffer as well as receiving, time stamping and transmission to the trace buffer of events from the \ASIC{}. This section will give a brief overview of this module, a more detailed description can be found in \autocite{ref:pb_exec}
+The \pbexec{} is responsible for processing the instruction stream that is received from the playback buffer as well as receiving, time stamping and transmission to the trace buffer of events from the \ASIC{}. \autoref{diagram:executor} shows a schematic overview of this module. This section will only give a brief overview of this module, a more detailed description can be found in \autocite{ref:pb_exec}.
 
 The instructions that are processed by the executor can broadly be categorized into the three different categories:
 \begin{itemize}
@@ -84,14 +85,14 @@ A special instruction, the \haltInstr{} is used to delineate separate experiment
 
 There are numerous sources like the result data of instructions in the \readCat{} and the events received from the \ASIC{} for trace data that are transmitted by the \pbexec{} on the trace stream. The data from these different sources is combined into the single trace stream using an arbiter, the trace arbiter, which uses a combination of round-robin and priority arbitration.
 
-The \pbexec{} operating at a \pbExecClock{} clock rate and can at most process a single instruction every clock cycle, however not every instruction can be processed in a single clock cycle. Obvious examples include instructions of the \waitCat{} which purposefully pause the processing of the instruction stream. Similar to the instruction stream the \pbexec{} can also emit at most a single trace word every clock cycle.
+The \pbexec{} operating at a \pbExecClock{} clock rate. The number of clock cycles that are required to process a instruction depends on the specific instruction that is processed, however for every instruction atleast one clock cycle is required. In other words the highest theoretical rate of instructions that the \pbexec{} can process is one instruction every clock cycle. Similar to the instruction stream the \pbexec{} can also emit at most a single trace word every clock cycle.
 
-Both the playback instruction stream and the trace data are fundamentally a stream of variable size words. For transmission and reception over the fixed width \HostARQ{} streams they are encoded using \UT{} encoding scheme\autocite{karasenko2020neumann}.
+Both the playback instruction stream and the trace data are fundamentally streams of variable size words. For transmission and reception over the fixed width \HostARQ{} streams they are encoded using \UT{} encoding scheme\autocite{karasenko2020neumann}.
 
 For the playback instruction stream this encoding is performed on the host. On the \FPGA{} the \pbexec{} decodes the instruction stream before processing it.
-Likewise, the trace data generated / received by the \pbexec{} is encoded by the \pbexec{} before being sent to the trace stream.
+Likewise, the trace data generated by the \pbexec{} is encoded by the \pbexec{} before being sent to the trace stream.
 
-The encoding and decoding also operates at a \pbExecClock{} clock rate and can produce / consume at most one \PhyWordSize{} sized word per clock cycle.
+The encoding and decoding also operates at a \pbExecClock{} clock rate and can produce/consume at most one \PhyWordSize{} sized word per clock cycle.
 
 This means the maximum data rate at which the playback stream can be processed and the maximum data rate that is sent on the trace stream is
 \[\PhyWordSize{} · \pbExecClock{} = \pbExecBandwidth{}\]
@@ -103,11 +104,7 @@ This overview is simplified and does not include all interfaces that the executo
 \end{figure}
 
 \subsection{Playback and trace buffer}\label{sec:old-pb-trace-management}
-The bandwidth between \FPGA{} and the \ASIC{} at \ASICBandwidth{} far exceeds the bandwidth between the host and the \FPGA{} of \HostBandwidth{}. To allow transmission and reception of the full data rate supported between the \FPGA{} and the \ASIC{} the \FPGA{} is connected to \SI{512}{\mebi\byte} of \DDR{} memory that is used as buffer for the playback and trace data.
-
-This section will describe the current implementation of this playback and trace buffer and highlight its shortcomings. A schematic overview of the current design is shown in \autoref{diagram:detail_old}.
-
-The \FPGA{} design uses the \XilinxMIG{} to allow access to this \DDR{} memory using the \AXI{} protocol.
+The bandwidth between \FPGA{} and the \ASIC{} at \ASICBandwidth{} far exceeds the bandwidth between the host and the \FPGA{} of \HostBandwidth{}. To allow transmission and reception of the full data rate supported between the \FPGA{} and the \ASIC{} the \FPGA{} is connected to \DDRSIZE{} of \DDR{} memory that is used as buffer for the playback and trace data. This section will describe the current implementation of this playback and trace buffer and highlight its shortcomings. A schematic overview of the current design is shown in \autoref{diagram:detail_old}. The \FPGA{} design uses the \XilinxMIG{} to allow access to this \DDR{} memory using the \AXI{} protocol.
 
 The playback and trace buffer has two responsibilities:
 \begin{itemize}
@@ -117,7 +114,7 @@ The playback and trace buffer has two responsibilities:
 
 In the current \FPGA{} design it operates as a pair of \FIFO{}s. One for the playback stream and one for the trace stream. The input side of the playback buffer is a \ValidNextStream{} that appends to the already stored data. On the output side the data is transmitted to the \pbexec{} in the same order it was received. The trace buffer operates analogously with the input and the outside switched.
 
-This \FIFO{} is implemented using the \Xilinx{} \VFIFO{} core, which implements a multichannel \FIFO{} backed by a \AXI{} accessible memory. It is connected to the \AXI{} interface of the \DDR{} controller. The \XilinxMIG{} is used as this \DDR{} controller. The \VFIFO{} core is used in a configuration using two channels. The first channel is used for the playback data and the second channel is used for the trace data.
+This \FIFO{} is implemented using the \Xilinx{} \VFIFO{} core, which implements a multichannel \FIFO{} backed by an \AXI{} accessible memory. It is connected to the \AXI{} interface of the \DDR{} controller. The \XilinxMIG{} is used as this \DDR{} controller. The \VFIFO{} core is used in a configuration using two channels. The first channel is used for the playback data and the second channel is used for the trace data.
 
 The playback control block is responsible for scheduling the transmission of the playback instruction stream to the \pbexec{}.
 It allows data to be transmitted from the \VFIFO{} to the \pbexec{} only when two conditions are fulfilled:
@@ -126,7 +123,7 @@ It allows data to be transmitted from the \VFIFO{} to the \pbexec{} only when tw
 \item The second condition is that the \VFIFO{} channel for the playback data is full or a \haltInstr{} was written to the \VFIFO{} but not transmitted to the \pbexec{} yet.
 \end{enumerate}
 When a complete \PlaybackProgram{} fits into the \VFIFO{} playback channel, these two conditions enforce that playback of the instructions that make up the \PlaybackProgram{} is only started once it was completely transmitted to the \VFIFO{}, as each \PlaybackProgram{} ends with a \haltInstr{}. This ensures that the rate of instructions that can be transmitted to the \pbexec{} is not limited by the slow \HostARQ{} interface but instead by the \VFIFO{} and indirectly by the \XilinxMIG{} interface speed.
-When a \PlaybackProgram{} does not fit completely in the \VFIFO{} playback channel, playback of it is started whenever the \VFIFO{} playback channel is full. This means that depending on rate the \pbexec{} is processing the playback instructions it is possible that the \HostARQ{} interface can be the limiting factor for the playback rate.
+When a \PlaybackProgram{} does not fit completely in the \VFIFO{} playback channel, playback of it is started whenever the \VFIFO{} playback channel is full. This means that depending on te rate the \pbexec{} is processing playback instructions it is possible that the \HostARQ{} interface can be the limiting factor for the playback rate.
 The \VFIFO{} is configured with a burst size of \(\SI{2048}{\byte}\) and using $\num{8192}$ pages of $\SI{4}{\kibi\byte}$ allocated to each the playback and the trace channel, which means it can store at most \(\num{8192} · \SI{4}{\kibi\byte} = \SI{32}{\mebi\byte}\) per channel.
 
 \begin{figure}
@@ -137,7 +134,7 @@ The \VFIFO{} is configured with a burst size of \(\SI{2048}{\byte}\) and using $
 
 This implementation of the playback and trace buffer has several shortcomings:
 \begin{enumerate}
-  \item It can on only use \(\SI{64}{\mebi\byte}\) (\(\SI{32}{\mebi\byte}\) for the playback and \(\SI{32}{\mebi\byte}\) for the trace data) of the available $\SI{512}{\mebi\byte}$ of memory\label{point:limited_size}
+  \item It can only use \(\SI{64}{\mebi\byte}\) (\(\SI{32}{\mebi\byte}\) for the playback and \(\SI{32}{\mebi\byte}\) for the trace data) of the available $\DDRSIZE{}$ of memory\label{point:limited_size}
   \item The \FIFO{} interface prohibits reading a non-contiguous block of the received trace data
   \item The \FIFO{} interface precludes already transmitted \PlaybackProgram{} or parts of them to be reused.
   \item Allocation of the total memory to either playback memory or trace memory is fixed, changing the size of memory allocated to each of them requires generating a new \FPGA{} bitstream.
@@ -146,8 +143,7 @@ The maximum size of the two \VFIFO{} channels can be increased by increasing the
 
 A replacement for the playback and trace buffer should fulfill the following requirements
 \begin{itemize}
-  \item Use the complete $\SI{512}{\mebi\byte}$ of available memory.
-  \item Support the maximum possible data rate of $\pbExecBandwidth{}$ supported by the \pbexec{} when transferring the playback data from the memory to the \pbexec{}.
+  \item Use the complete $\DDRSIZE{}$ of available memory.
   \item Support the maximum possible data rate of $\pbExecBandwidth{}$ supported by the \pbexec{} when transferring the trace data from the \pbexec{} to the memory.
   \item Allow reuse of already transmitted playback instructions. Because the bandwidth between the host and the \FPGA{} is a lot smaller than the bandwidth between the \FPGA{} and the \ASIC{} this can increase the rate experiments can be performed.
   \item Allow out of order access to the received trace data. This can reduce the time required to transfer the relevant trace data from the \FPGA{} to the host, when not all trace data is relevant.  It furthermore allows for an increased level of introspection of the state of the \FPGA{}, especially in case of unexpected behaviour.
