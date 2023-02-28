@@ -91,7 +91,7 @@ The new playback and trace buffer design achieves the maximum bandwidth for any 
 \end{figure}
 
 \subsection{\FAXI{} based memory mapped communication}
-The \rtt{} and the bandwidth of the \FAXI{} based \AXI{} Manager over \HostARQ{} is measured. All measurements were performed from the same host computer (\testnode{}) reserved exclusively for these tests.
+The \rtt{} and the bandwidth of the \FAXI{} based \AXI{} Manager over \HostARQ{} is measured. All measurements were performed from the same host computer (\testnode{}), reserved exclusively for these test to avoid other running experiments influencing the results.
 To measure the \rtt{} minimum size reads and write of $\SI{8}{\byte}$ from multiple \AXI{} Subordinates is performed. For reads the time elapsed between the transmission of the header and address and the reception of the read data is measured, while for writes the time elapsed between the transmission of the write transaction and the reception of the write response is measured. The measured \rtt{} can is visualized in \autoref{fig:faxi_rtt} and table \autoref{tbl:rtt} summarizes the average latency that was measured.
 
 \begin{table}[H]

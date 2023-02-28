@@ -1,14 +1,20 @@
 \section{Background}
-The main interface of the \HICANNX{} \ASIC{} is a set of $\num{16}$ \LVDS{} lanes. Over these \LVDS{} lanes configuration of the parameters controlling the operation of the chip such as configuration of the synapse connections and the neuron parameters as well as neuron events are transmitted. These neuron events can be inputs from sources external to the \ASIC{} to the network of neurons and synapses as well as events generated on the \ASIC{} and transmitted to external sinks.
-This communication of events happens in a real-time fashion as the time continuous analog emulation performed by the \ASIC{} cannot be paused and continued arbitrarily. To facilitate this real-time communication  an \FPGA{} is used. This thesis will focus mainly on the network attached accelerator deployment. In this case the \FPGA{} is connected to a host computer over a network connection.
+To perform experiments with the \HICANNX{} \ASIC{} several steps are necessary:
+\begin{enumerate}
+\item The components of the \ASIC{} such an the parameters controlling the behaviour of its neurons and synapses have to be configured.
+\item Some form of input data has to be transmitted to the \ASIC{}, which is then processed by it.
+\item Data generated during this processing is transmitted to the \FPGA{}.
+\end{enumerate}
+Communication with the \ASIC{} happens in a real-time fashion as the time continuous analog emulation performed by the \ASIC{} cannot be paused and continued arbitrarily. Accordingly input data in the form of neuron events has to be transmitted to the \ASIC{} with precise timing and the timing of neuron events received back from the \ASIC{} has to be measured precisely.
+The scheduling of event transmission and the timestamping of the received events on the \FPGA{} is realized by the \pbexec{} module on the \FPGA{}.
 
-The real-time communication with the \ASIC{}, especially the transmission and reception of neuron events, requires precise timing\autocite{ref:precise_timing}.
-To achieve this precise timing an \FPGA{} is used to send neuron events to the \ASIC{} and timestamp received events. The scheduling of event transmission and the timestamping of the received events on the \FPGA{} is performed by the \pbexec{} module on the \FPGA{}.
 To perform an experiment the host computer generates a sequence of instructions. This sequence of instructions contains the operations necessary to configure the \ASIC{} and contains instructions that control the timing and content of events to be transmitted to the \ASIC{}.
 This sequence of instructions, called \PlaybackProgram{}, is then processed by the \pbexec{} with a timing resolution of $\SI{8}{\nano\second}$.
 Events received from the \ASIC{} are timestamped with the same resolution.
 
-The high speed interface of the \ASIC{} is made up out of sixteen \LVDS{} lanes, eight for each direction that are able to operate at up to $\SI{2}{\giga\bit\per\second}$ for a total of $\SI{16}{\giga\bit\per\second}$ of full duplex bandwidth.
+The high speed interface used for the communication between the \ASIC{} and the \FPGA{} is made up out of sixteen \LVDS{} lanes, eight for each direction that are able to operate at up to $\SI{2}{\giga\bit\per\second}$ for a total of $\SI{16}{\giga\bit\per\second}$ of full duplex bandwidth.
+
+This thesis will focus mainly on the network attached accelerator deployment. In this case the \FPGA{} is connected to a host computer over a network connection.
 
 The current network attached accelerator deployment used by the Electronic Vision(s) group called \BSSTwo{}-Cube\autocite{ref:bss_cube} uses a \Xilinx{} \Kintex7{} \FPGA{} and \LVDS{} lanes of the \ASIC{} are operated at $\SI{1}{\giga\bit\per\second}$. The host and the \FPGA{} communicate using the \UDP{} protocol over \Gigabitethernet{}. A custom automatic repeat request (ARQ) protocol\autocite{ref:hostarq} developed by the Electronic Vision(s) group is used to ensure reliable and ordered transmission of a stream of \PhyWordSize{} words over the unreliable and unordered \UDP{} protocol. In this thesis this protocol will be called \HostARQ{} hereafter.
 

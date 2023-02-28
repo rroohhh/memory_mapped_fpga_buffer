@@ -24,7 +24,7 @@
 \usepackage{crimson}
 \usepackage{newtxmath}
 \usepackage{polyglossia}
-\usepackage[style=authoryear,backend=biber]{biblatex}
+\usepackage[natbib=true,style=authoryear,backend=biber]{biblatex}
 \usepackage{microtype}
 \usepackage{minted}
 \usepackage{xstring}
@@ -35,6 +35,11 @@
 \usepackage[bottom=2.5cm,top=2.0cm,left=2.4cm,right=2.4cm]{geometry}
 
 \usepackage[detect-all,binary-units,separate-uncertainty=true,round-mode=uncertainty,input-digits={0123456789ABCDEF}]{siunitx}
+
+\setdefaultlanguage{english}
+
+\NewCommandCopy{\oldautocite}{\autocite}
+\renewcommand{\autocite}[1]{ \oldautocite{#1}}
 
 \cellspacetoplimit4pt
 \cellspacebottomlimit4pt
@@ -62,6 +67,10 @@
 % \makeindex
 
 \raggedbottom%
+
+
+\newcommand{\thesisTitle}{Implementation of an \FPGA{}-based memory mapped buffer for real-time communication with a neuromorphic \ASIC{}}
+\newcommand{\thesisTitleGerman}{Entwicklung eines \FPGA{}-basierten memory-mapped Zwischenspeicher für Echtzeit-Kommunikation mit einem neuromorphen \ASIC{}}
 
 \providecommand*{\listingautorefname}{Listing}
 
@@ -202,9 +211,33 @@
 
 \begin{document}
 
+\pagestyle{empty}
 \include{ba_titlepage}
 
+
+\pagebreak
+
+\begin{abstract}
+\begin{center}
+\textbf{\thesisTitle}
+\end{center}
+Experiments using the \HICANNX{} require real-time communication as the analog emulation performed by \ASIC{} cannot be stopped an continued arbitrarily. This real-time communication is realized by an \FPGA{}. A buffer for the data to be sent to the \ASIC{} and for data received from the \ASIC{} is necessary due to the mismatch of bandwidth between the \FPGA{} and the host computer performing the experiment and the bandwidth between the \FPGA{} and the \ASIC{}. This thesis presents a new design for this buffer that improves over the old design on several fronts. The useable size is increased from $\SI{64}{\mebi\byte}$ to the maximum possible size of \DDRSIZE{}. The new buffer provides deterministic timing for data sent to the \ASIC{}, which was not provided by the old buffer for all data sizes. The options for organization of the data to be transmitted to the \ASIC{} and data received from the \ASIC{} are extended to allow repeat use of the same data. Basic integration with the \BSSTwo{} software stack was performed. Suggestions to improve the only disadvantage of the new buffer design of a reduced rate of experiments that can be performed in \HWinTheLoop{} fashion are made.
+
+\begin{center}
+\textbf{\thesisTitleGerman}
+.\end{center}
+Experimente mit dem \HICANNX{} setzen Echtzeit-Kommunikation vorraus, da die analoge Emulation die von dem \ASIC{} durchgeführt wird nicht beliebig pausiert und wieder gestartet werden kann. Diese Echtzeit-Kommunikation wird mittels eines \FPGA{}s umgesetzt. Ein Zwischenspeicher auf dem \FPGA{} ist notwending da die Daten-Bandbreite zwischen dem \FPGA{} und dem \ASIC{} größer ist als die Bandbreite zwischen dem \FPGA{} und dem Computer der für die Durchführung eines Experimentes benutzt wird. In dieser Arbeit wird eine neue Umsetzung für diesen Zwischenspeicher vorgestellt. Diese verbessert die alte Umsetzung in mehreren Punkten. Zum Einen wird der Zwischenspeichers von $\SI{64}{\mebi\byte}$ auf \DDRSIZE{} vergrößert. Zum Anderen garantiert die neue Umsetzung deterministische zeitlich Übertragung der Daten für jede mögliche Größe der Daten. Dies ist nicht der Fall für die alte Umsetzung des Zwischenspeichers. Außerdem erweitert die neue Umsetzung des Zwischenspeichers die Möglichkeiten für die Organisation von Daten die zum \ASIC{} gesendet werden sollen und die vom \ASIC{} empfangen wurden. Es wird das wiederholte Senden der gleichen Daten ermöglicht. Die maximale Rate an Experimenten die mit dem neuen Zwischenspeicher durchgeführt werden können ist für typische Größen bis zu zweimal niedriger als die rate mit dem alten Zwischnespeicher. Vorschläge zur Verbesserung dieser Rate werden vorgestellt.
+
+\end{abstract}
+\pagebreak
+
 \tableofcontents
+
+
+\pagestyle{plain}
+
+\setcounter{page}{1}
+\pagenumbering{arabic}
 
 \include{introduction.tex}
 \include{background.tex}
