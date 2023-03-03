@@ -3,6 +3,6 @@ The field of neuromorphic computing draws inspiration from the structure and ope
 
 Communication with the \HICANNX{} has real-time requirements, needs high bandwidth and requires precise timing, as the time continuous analog emulation performed by the \ASIC{} cannot be paused and resumed.
 
-Current systems using the \HICANNX{} use an \FPGA{} as a bridge between a conventional host computer and the \ASIC{}. The real-time communication with the \ASIC{} is realized with the help of an \FPGA{}. For this purpose the \FPGA{} includes a buffer. This buffer is used to store data prior to transmission to the \ASIC{} and data received from the \ASIC{} prior to transmission back to the host computer.
+Current systems using the \HICANNX{} use an \FPGA{} as a bridge between a conventional host computer and the \ASIC{} to realize the real-time communication with the \ASIC{}. For this purpose the \FPGA{} includes a buffer. This buffer is used to store data prior to transmission to the \ASIC{} and store data received from the \ASIC{} until it is sent back to the host computer.
 
 In this thesis a replacement design of this buffer is developed and implemented. It improves the reliability and increases the usable size while extending it with more functionality.

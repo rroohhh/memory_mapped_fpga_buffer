@@ -1,6 +1,6 @@
 %&header
 
-\documentclass[a4paper,DIV=15]{scrartcl}
+\documentclass[10.5pt,a4paper,DIV=15]{scrartcl}
 
 
 \usepackage{amsmath}
@@ -29,6 +29,9 @@
 \usepackage{minted}
 \usepackage{xstring}
 \usepackage{newunicodechar}
+
+\usepackage{setspace}
+\onehalfspacing{}
 
 \usepackage[column=C]{cellspace}
 
@@ -217,16 +220,29 @@
 
 \pagebreak
 
+% abstract:
+% general beschreibung -> 1 Satz: Der BSS-2 ASIC ist mixed signal neuromorphic analog asic, physical model of neurons, echtzeit analog + digital control.
+% Dann first three sentences
+% dann
+% problem statement:
+% es gibt schon etwas dass das tut, es ist limitiert, was sind limitationen
+% dann
+% what did I do:
+
+
 \begin{abstract}
 \begin{center}
 \textbf{\thesisTitle}
 \end{center}
-Experiments using the \HICANNX{} require real-time stimuli, since the analog emulation performed by the \ASIC{} cannot be stopped an continued arbitrarily. This real-time communication is realized using an \FPGA{}. A buffer for the data to be sent to the \ASIC{} and for data received from the \ASIC{} is necessary due to the mismatch of bandwidth between the \FPGA{} and the host computer performing the experiment and the bandwidth between the \FPGA{} and the \ASIC{}. This thesis presents a new design for this buffer that improves over the old design in several ways: the usable size is increased from $\SI{64}{\mebi\byte}$ to the full size of the connected \DRAM{} of \DDRSIZE{}. The new buffer provides deterministic timing for data sent to the \ASIC{}, which was not provided by the old buffer under all conditions. Finally, the options for organization of data to be transmitted to and data received from the \ASIC{} are extended to allow repeated use and sparse readout of data. Basic integration with the \BSSTwo{} software stack was performed. The only disadvantage of the new buffer design is a reduced rate of experiments that can be performed in \HWinTheLoop{} fashion. Suggestions to improve this rate in future extensions are made.
+BrainScaleS-2 is a mixed signal neuromorphic \ASIC{} combining accelerated physical emulation of brain-inspired neurons and synapses with digital control logic. Experiments using the \HICANNX{} require real-time stimuli, since the analog emulation performed by the \ASIC{} cannot be stopped an continued arbitrarily. This real-time communication is realized using an \FPGA{}. A buffer for the data to be sent to the \ASIC{} and for data received from the \ASIC{} is necessary due to the mismatch of bandwidth between the \FPGA{} and the host computer performing the experiment and the bandwidth between the \FPGA{} and the \ASIC{}. The current buffer implementation has several limitations. It is not able to make use of all of the connected \DRAM{} and the bandwidth of the buffer is smaller than the bandwidth between the \FPGA{} and the \ASIC{} for some cases, leading to nondeterministic timing that can reduce reproducibility.
+This thesis presents a new design for this buffer that trades a lower maximum rate of experiments for the ability to use the full size of the connected \DRAM{} of \DDRSIZE{}. The bandwidth is increased to always provide deterministic timing. Furthermore, the options for organization of data to be transmitted to and data received from the \ASIC{} are extended to allow repeated use and sparse readout of data. Basic integration with the \BSSTwo{} software stack was performed as well.
 
 \begin{center}
 \textbf{\thesisTitleGerman}
 \end{center}
-Experimente mit dem \HICANNX{} setzen Echtzeit-Stimuli vorraus, da die analoge Emulation, die von dem \ASIC{} durchgeführt wird, nicht pausiert und wieder gestartet werden kann. Diese Echtzeit-Kommunikation wird mittels eines \FPGA{}s umgesetzt. Ein Zwischenspeicher auf dem \FPGA{} ist notwending da die Daten-Bandbreite zwischen dem \FPGA{} und dem \ASIC{} größer ist als die Bandbreite zwischen \FPGA{} und Computer für die Durchführung der Experimente. In dieser Arbeit wird eine neue Architektur für diesen Zwischenspeicher entwickelt und umgesetzt. Diese Architektur verbessert die alte Umsetzung in mehreren Punkten: zum Einen ermöglicht die neue Architektur die volle Ausnutzung des an den \FPGA{} angebundenen \DDR{} Speichers und vergrößert damit den Zwischenspeicher von $\SI{64}{\mebi\byte}$ auf \DDRSIZE. Zum Anderen garantiert die neue Umsetzung deterministische zeitlich Übertragung der Daten für jede mögliche Größe der Daten. Dies ist nicht der Fall für die alte Umsetzung des Zwischenspeichers. Außerdem wird wiederholtes Senden und partielles Auslesen der Daten ermöglicht. Der einzige Nachteil ist die Reduktion der maximale Rate an Experimenten die mit dem neuen Zwischenspeicher durchgeführt werden können. Vorschläge zur Verbesserung dieser Rate werden vorgestellt.
+Der BrainScaleS-2 Mixed-Signal neuromorphe \ASIC{} kombiniert eine beschleunigte physikalische Emulation von dem Gehirn nachempfundenen Neuronen und Synapses mit digitaler Logik zur Konfiguration. Experimente mit dem \HICANNX{} setzen Echtzeit-Stimuli vorraus, da die analoge Emulation, die von dem \ASIC{} durchgeführt wird, nicht pausiert und wieder gestartet werden kann. Diese Echtzeit-Kommunikation wird mittels eines \FPGA{}s umgesetzt. Ein Zwischenspeicher auf dem \FPGA{} ist notwending da die Daten-Bandbreite zwischen dem \FPGA{} und dem \ASIC{} größer ist als die Bandbreite zwischen \FPGA{} und Computer für die Durchführung der Experimente. Die aktuelle Umsetzung dieses Zwischenspeicher hat den Nachteil das nicht der komplette an den \FPGA{} angeschlossene Speicher ausgenutzt werden kann. Außerdem ist in manchen Fällen die vom Zwischenspeicher erreichte Bandbreite kleiner als die Bandbreite zwischen \ASIC{} und \FPGA{}, wodurch die Wiederholbarkeit von Experimenten reduziert wird.
+In dieser Arbeit wird eine neue Architektur für diesen Zwischenspeicher entwickelt und umgesetzt.
+Die Ausnutzung des ganzen an den \FPGA{} angebundenen \DDR{} Speichers wird ermöglicht und vergrößert damit den Zwischenspeicher von $\SI{64}{\mebi\byte}$ auf \DDRSIZE. Außerdem ist die Bandbreite groß genug um deterministische zeitlich Übertragung der Daten zu garantieren. Zusätzlich wiederholtes Senden und partielles Auslesen der Daten ermöglicht. Der einzige Nachteil ist die Reduktion der maximale Rate an Experimenten die mit dem neuen Zwischenspeicher durchgeführt werden können. Vorschläge zur Verbesserung dieser Rate werden vorgestellt.
 
 \end{abstract}
 \pagebreak
