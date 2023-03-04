@@ -40,6 +40,7 @@
 \usepackage[detect-all,binary-units,separate-uncertainty=true,round-mode=uncertainty,input-digits={0123456789ABCDEF}]{siunitx}
 
 \setdefaultlanguage{english}
+\setotherlanguage{german}
 
 \NewCommandCopy{\oldautocite}{\autocite}
 \renewcommand{\autocite}[1]{ \oldautocite{#1}}
@@ -52,6 +53,8 @@
 \usepackage[toc]{glossaries}
 
 \renewcommand\cellalign{lc}
+
+\renewcommand\footnote[1]{}
 
 \ExecuteBibliographyOptions{mincrossrefs=100}
 
@@ -234,15 +237,21 @@
 \begin{center}
 \textbf{\thesisTitle}
 \end{center}
-BrainScaleS-2 is a mixed signal neuromorphic \ASIC{} combining accelerated physical emulation of brain-inspired neurons and synapses with digital control logic. Experiments using the \HICANNX{} require real-time stimuli, since the analog emulation performed by the \ASIC{} cannot be stopped an continued arbitrarily. This real-time communication is realized using an \FPGA{}. A buffer for the data to be sent to the \ASIC{} and for data received from the \ASIC{} is necessary due to the mismatch of bandwidth between the \FPGA{} and the host computer performing the experiment and the bandwidth between the \FPGA{} and the \ASIC{}. The current buffer implementation has several limitations. It is not able to make use of all of the connected \DRAM{} and the bandwidth of the buffer is smaller than the bandwidth between the \FPGA{} and the \ASIC{} for some cases, leading to nondeterministic timing that can reduce reproducibility.
-This thesis presents a new design for this buffer that trades a lower maximum rate of experiments for the ability to use the full size of the connected \DRAM{} of \DDRSIZE{}. The bandwidth is increased to always provide deterministic timing. Furthermore, the options for organization of data to be transmitted to and data received from the \ASIC{} are extended to allow repeated use and sparse readout of data. Basic integration with the \BSSTwo{} software stack was performed as well.
+BrainScaleS-2 is a mixed signal neuromorphic \ASIC{} combining accelerated physical emulation of brain-inspired neurons and synapses with digital control logic. Experiments using the \HICANNX{} require real-time stimuli, since the analog emulation performed by the \ASIC{} cannot be stopped and continued arbitrarily. This real-time communication is realized using an \FPGA{}, while a conventional host computer controls the experiment. A buffer for the data to be sent to the \ASIC{} and for data received from the \ASIC{} is necessary in the \FPGA{}, due to the mismatch of bandwidth to the host computer and the \ASIC{}. The current buffer implementation has several limitations. It is not able to make use of all of the connected \DRAM{} and the bandwidth of the buffer is smaller than the bandwidth between the \FPGA{} and the \ASIC{} for some cases, leading to nondeterministic timing that can reduce reproducibility.
+This thesis presents a new design for this buffer that trades a lower maximum rate of experiments for the ability to use the full size of the available \DRAM{}. The bandwidth is increased to always provide deterministic timing. Furthermore, the options for organization of data to be transmitted to and data received from the \ASIC{} are extended to allow repeated use and sparse readout of data. Basic integration with the \BSSTwo{} software stack was performed as well, that passes all unit and integration tests and transparently allows higher level software to use the new buffer.
 
 \begin{center}
 \textbf{\thesisTitleGerman}
 \end{center}
-Der BrainScaleS-2 Mixed-Signal neuromorphe \ASIC{} kombiniert eine beschleunigte physikalische Emulation von dem Gehirn nachempfundenen Neuronen und Synapses mit digitaler Logik zur Konfiguration. Experimente mit dem \HICANNX{} setzen Echtzeit-Stimuli vorraus, da die analoge Emulation, die von dem \ASIC{} durchgeführt wird, nicht pausiert und wieder gestartet werden kann. Diese Echtzeit-Kommunikation wird mittels eines \FPGA{}s umgesetzt. Ein Zwischenspeicher auf dem \FPGA{} ist notwending da die Daten-Bandbreite zwischen dem \FPGA{} und dem \ASIC{} größer ist als die Bandbreite zwischen \FPGA{} und Computer für die Durchführung der Experimente. Die aktuelle Umsetzung dieses Zwischenspeicher hat den Nachteil das nicht der komplette an den \FPGA{} angeschlossene Speicher ausgenutzt werden kann. Außerdem ist in manchen Fällen die vom Zwischenspeicher erreichte Bandbreite kleiner als die Bandbreite zwischen \ASIC{} und \FPGA{}, wodurch die Wiederholbarkeit von Experimenten reduziert wird.
-In dieser Arbeit wird eine neue Architektur für diesen Zwischenspeicher entwickelt und umgesetzt.
-Die Ausnutzung des ganzen an den \FPGA{} angebundenen \DDR{} Speichers wird ermöglicht und vergrößert damit den Zwischenspeicher von $\SI{64}{\mebi\byte}$ auf \DDRSIZE. Außerdem ist die Bandbreite groß genug um deterministische zeitlich Übertragung der Daten zu garantieren. Zusätzlich wiederholtes Senden und partielles Auslesen der Daten ermöglicht. Der einzige Nachteil ist die Reduktion der maximale Rate an Experimenten die mit dem neuen Zwischenspeicher durchgeführt werden können. Vorschläge zur Verbesserung dieser Rate werden vorgestellt.
+BrainScaleS-2 ist ein Mixed-Signal neuromorpher \ASIC{}. Dabei wird beschleunigte, analoge Emulation von dem Hirn nachempfundenen von Neuronen und Synapsen mit digitaler Logik zur Konfiguration kombiniert.
+Da der analoge Teil des \ASIC{} nicht pausiert und wieder gestartet werden kann, setzt die Durchführung von Experimenten mit dem \HICANNX{} Echtzeit-Übertragung der Stimuli voraus.
+Um diese Echtzeit-Übertragung für einen konventionellen Computer, der das Experiment durchführt, zu ermöglichen, wird ein \FPGA{} verwendet.
+Aufgrund der unterschiedlichen Bandbreiten zwischen Computer und \ASIC{} wird ein Zwischenspeicher auf dem \FPGA{} benötigt.
+Die aktuelle Umsetzung dieses Zwischenspeicher hat den Nachteil, dass nicht der komplette an den \FPGA{} angeschlossene Speicher ausgenutzt werden kann und in manchen Fällen die vom Zwischenspeicher erreichte Bandbreite kleiner ist als die Bandbreite zwischen \ASIC{} und \FPGA{}. Wenn diese Bandbreite nicht erreicht wird, kann die benötigte Echtzeit-Übertragung nicht garantiert werden und die Reproduzierbarkeit von Experimenten sinkt.
+In dieser Arbeit wird eine neue Architektur für diesen Zwischenspeicher entwickelt und umgesetzt,
+die die Ausnutzung des ganzen an den \FPGA{} angebundenen \DDR{} Speichers ermöglicht. Dabei ist die Bandbreite des Zwischenspeichers immer groß genug, um die Echtzeit-Übertragung zu garantieren. Zusätzlich wird wiederholtes Senden und partielles Auslesen der Daten ermöglicht.
+Der einzige Nachteil der neuen Umsetzung ist eine Reduktion der maximal erreichten Anzahl an Experimenten die in einer bestimmten Zeit durchgeführt werden können. Vorschläge zur Verbesserung dieser Rate werden ebenfalls vorgestellt.
+Die Programmbibliotheken die zur Durchführung von Experimenten verwendet werden wurden angepasst, sodass transparent für die Experimente der neue Zwischenspeicher verwendet wird.
 
 \end{abstract}
 \pagebreak
@@ -262,7 +271,107 @@ Die Ausnutzung des ganzen an den \FPGA{} angebundenen \DDR{} Speichers wird erm�
 \include{discussion.tex}
 % \include{outlook.tex}
 
-\printbibliography
+\addcontentsline{toc}{section}{Bibliography}
+\printbibliography{}
+
+\pagebreak
+\appendix
+
+\section{Code environment}
+\autoref{tbl:commit_hashes} lists the commit hashes that identify the version of the different software and \FPGA{} components used throughout this thesis. For some components additional changes that are not yet merged into the components were used. This includes many of the changes developed in this thesis. \autoref{tbl:change_ids} lists the \texttt{Change-ID}s of these changes. The code belonging to these changes can be found on gerrit (\url{https://gerrit.bioai.eu/}).
+% \begin{sidewaystable}
+\begin{table}[H]
+\centering\begin{tabular}{l >{\ttfamily}l}
+\toprule{}
+repository & commit \\
+\midrule{}ayo & 29abb7761e18a22b0aa3b8f06f899ff3d932e4b5 \\
+
+bss-hw-params\footnote{\url{https://github.com/electronicvisions/bss-hw-params}} & 8e5e18ebbdece63890eebd4f082084111846e965 \\
+
+fisch\footnote{\url{https://github.com/electronicvisions/bss-hw-params}} & 1215ebcdddd123ec4b373dec6e85996c8eedcd94  \\
+
+flange\footnote{\url{https://github.com/electronicvisions/flange}} & 2bd1631ca1a2608fedb84b5de7586c9b68d2d141 \\
+
+halco\footnote{\url{https://github.com/electronicvisions/halco}} & 8fcef09d20b45f00ecc9d7cdbbcc6fcb1cf847aa \\
+
+haldls\footnote{\url{https://github.com/electronicvisions/haldls}} & 8fcef09d20b45f00ecc9d7cdbbcc6fcb1cf847aa \\
+
+hate\footnote{\url{https://github.com/electronicvisions/hate}} & fe1c7f35924b4a96f64c88cfb2fd3c0126ed3e48 \\
+
+hwdb\footnote{\url{https://github.com/electronicvisions/hwdb}} & 0143bd6e177cdc2ec1f49e9276884078f3976b22 \\
+
+hxcomm\footnote{\url{https://github.com/electronicvisions/hxcomm}} & 680bdcfd6678e5a561b0ba884d65dcde571523ff \\
+
+lib-boost-patches\footnote{\url{https://github.com/electronicvisions/lib-boost-patches}} & ed89665b4c066629b69617ede2e8b1fbe65822d9 \\
+
+lib-rcf\footnote{\url{https://github.com/electronicvisions/lib-rcf}} & 8f928103ada425be321f33eb599e93eebabd81f4 \\
+
+libnux\footnote{\url{https://github.com/electronicvisions/libnux}} & 921beaebd23936751b883ba579c1c56fabce5485 \\
+
+logger\footnote{\url{https://github.com/electronicvisions/logger}} & 87c2b33573dd63141861a6ab96a4a5d0de145b42 \\
+
+pywrap\footnote{\url{https://github.com/electronicvisions/pywrap}} & 8eda91fcca8bfccb946a0ee5b40ca82b5b15650e \\
+
+rant\footnote{\url{https://github.com/electronicvisions/rant}} & 0d494ce6eedfb74889cf7cee09105258819acb35 \\
+
+sctrltp\footnote{\url{https://github.com/electronicvisions/sctrltp}} & 42a988e986906f177102813418d5fd22dd646b44 \\
+
+visions-slurm\footnote{\url{https://github.com/electronicvisions/visions-slurm}} & 8f41ea4f5bd1573d8f4623e9ed698a29f30036a3 \\
+
+ztl\footnote{\url{https://github.com/electronicvisions/ztl}} & 773660f435e56b1ee7b962e8babfe004ff487cdd \\
+
+hicann-dls-private & 57e29fa5cfb94063e8be55835852625c2a838265 \\
+
+hmf-fpga & a8bf14759ff62d72bef4dacd09f3510228e742c0 \\
+
+hmf-fpga-test & 80b8fc93498557722344d1f164d95e84168b9a88 \\
+
+hxfpga & 69020247821e557e4c95fc806338d225df317919 \\
+
+lib-extoll-utils & a529b24a84d9776bcc6b39ad65985999ea9eb3bc \\
+
+lib-vhdl-utils & 7e23071e310946398ecc6bf4f1764886ac276e2e \\
+
+s2pp & 84494c3ab040962cf77a4b5e216a73c24fb188e1 \\
+
+verilog-i2c\footnote{\url{https://github.com/electronicvisions/verilog-i2c}} & ad61cd1b90cb60d0776fbc2f4d8fe5f81f28c437 \\
+
+verilog-uart\footnote{\url{https://github.com/electronicvisions/verilog-uart}} & d7e9f305e1d12bdaebade995997834d2555f5918 \\
+
+visionary-rtl-utils & 88d877f9ff8192be5bad89cc4eff7f631dfeeb8b \\
+\bottomrule{}
+\end{tabular}
+\caption{List of commit hashes identifying the version of the software and \FPGA{} repositories.}\label{tbl:commit_hashes}
+\end{table}
+
+\begin{table}[H]
+\centering\begin{tabular}{l >{\ttfamily}l}
+\toprule{} repository & additional changes \\
+\midrule{} ayo & \makecell{Ie5012d8b575a63ee97225e3c8dcec0787d6ebc2f\\ I179bcc7f516872180c18c4cb805138209f685a84\\ Ic641d3bab02a69462b89c37889f91145134aa556} \\
+flange & If7780dd27375d4b073a63c3bc34cfd87ac23772f \\
+halco & I129931f8010b9c20dc87df361d393acfb1656785 \\
+haldls & I129931f8010b9c20dc87df361d393acfb1656785 \\
+hxcomm & \makecell{Id5251a53698b4bf0a0a89c59971ae42c0b816caf\\ I13bf5649f7adaa34058cc2b55c0db1449cdceb66\\ I510a72e39edd2a3e05d315ebbe731deded89a763} \\
+hxfpga & \makecell{Ic31ed629ff7d92a59053755ba3c4b6125694b9e0\\ If92ea7f519299acf514667da6d244ebaf6f976ce\\ I87807ac4d497eba4a2ea0ae80aa63ba9688985cf\\ Ia29c666d88eb26dc20a741a14074a15063da4e1f\\ I62baf9372190121186728010dc6c714d4394ac7b\\ Ic46ab7a4ad97ff006a5ab9606b78fce3c7aa8dc9\\ Ida2393ab5111a47f1710ce451a54590322c842d4\\ I2a8b1a926333e8221a5e86a4f51b96b4443c822d} \\
+lib-vhdl-utils & \makecell{I040920155d9b651ea7796111a68fa23f3ce13449\\  I472248e52f4a16841e2227626cf8d12dcba0826a} \\
+visionary-rtl-utils & \makecell{Id9f35205596144fa719b223f6bb2dfa37abf60b9\\ I68a653809a4632b00f1cd9497a5917f1ec0b979f\\ Ica56e53d44b73177580d00cc869fee709c4858c5\\  I56ecff5352246ca7026e3b9a3d205dac151ec069} \\
+\bottomrule{}
+\end{tabular}
+\caption{List of Change-Ids for the changes not yet merged into main repositories. They can be found on gerrit (\url{https://gerrit.bioai.eu/})}\label{tbl:change_ids}
+\end{table}
+
+\pagebreak{}
+\section*{Acknowledgements}
+I would like to thank
+\begin{itemize}
+\item Dr. Johannes Schemmel for the opportunity to write my thesis within the Electronic Vision(s) group.
+\item Joscha Ilmberger for the great support since my internship.
+\item Yannik Stradmann, Joscha Ilmberger, Eric Müller and Christian Mauch for great discussions and insights.
+\item Everybody who helped with proofreading this thesis: Joscha Ilmberger, Yannik Stradmann, Christian Mauch, Jaro Habiger, Anna Klingauf and Dirk Heinemann.
+\item The Electronic Vision(s) group for providing a great place to work.
+\item My friends and family for their support during my studies.
+\end{itemize}
+
 \include{declaration}
 
 \end{document}

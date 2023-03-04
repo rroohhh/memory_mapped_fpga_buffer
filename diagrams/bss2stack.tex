@@ -1,0 +1,108 @@
+% % \documentclass[crop,tikz]{standalone}
+
+% % \usetikzlibrary{arrows,arrows.meta,bending,positioning,calc,patterns,backgrounds,fit,decorations.pathreplacing,shapes.geometric}
+% % frontiers colorscheme
+% \definecolor{color0}{HTML}{1f77b4}  % blue
+% \definecolor{color1}{HTML}{ff7f0e}  % orange
+% \definecolor{color2}{HTML}{2ca02c}  % green
+% \definecolor{color3}{HTML}{d62728}  % red
+% \definecolor{color4}{HTML}{9467bd}  % purple
+% \definecolor{color5}{HTML}{8c564b}  % red-gray
+% \definecolor{color6}{HTML}{e377c2}  % pink
+% \definecolor{color7}{HTML}{7f7f7f}  % gray
+% \definecolor{color8}{HTML}{bcbd22}  % incredibly ugly yellow-gray
+% \definecolor{color9}{HTML}{17becf}  % light blue
+
+% % colors for multi-compartment illustrations
+% \colorlet{comp0}{color1!60}
+% \colorlet{comp1}{color5!60}
+% \colorlet{comp2}{color8!60}
+% \colorlet{comp3}{color2!60}
+% \colorlet{comp4}{color3!60}
+% \colorlet{comp5}{color6!60}
+
+% \begin{document}
+\begin{tikzpicture}[>={Latex[width=2mm,length=2mm]},every text node part/.style={align=left}, layer/.style={anchor=center,draw,rectangle,align=left,minimum width=3.6cm,text width=3.4cm, minimum height=1.2cm, fill=white, rounded corners}]
+
+	\node (pynn) [layer] {pyNN\\\small\textit{pyNN.brainscales2}};
+	\node[layer, right=1cm of pynn] (hxtorch) {PyTorch\\\small\textit{hxtorch}};
+
+	\node[layer] (networkGraph) at ($(pynn.south)!0.5!(hxtorch.south)+(0,-1.1cm)$) {Network Graph\\\small\textit{grenade}};
+	\node[layer, below=0.5cm of networkGraph] (signalFlowGraph) {Signal-Flow Graph\\\small\textit{grenade}};
+	\node[layer] (placeRoute) at ($(networkGraph)!0.5!(signalFlowGraph)+(-4.7cm,0)$) {Place and Route\\\small\textit{grenade}};
+
+	\node[layer] (calix) at ($(networkGraph)!0.5!(signalFlowGraph)+(+4.6cm,0)$) {Calib Routines\\\small\textit{calix}};
+
+	\node[layer, below=0.5cm of signalFlowGraph] (lola) {Logical Container\\\small\textit{lola}};
+	\node[layer, below=0.5cm of lola] (haldls) {HW Containers\\\small\textit{haldls}};
+	\node[layer, below=0.5cm of haldls] (fisch) {FPGA Instructions\\\small\textit{fisch}};
+	\node[layer] (stadls) at ($(lola)!0.5!(haldls)+(4.6cm,0)$) {Runtime Control\\\small\textit{stadls}};
+	\node[layer, below=0.5cm of stadls] (libnux) {Embedded Runtime\\\small\textit{libnux}};
+	\node[layer, left=1cm of haldls] (halco) {Coordinates\\\small\textit{halco}};
+	\node[layer, left=1cm of fisch] (hwdb) {Hardware Database\\\small\textit{hwdb}};
+	\node[layer, below=0.5cm of fisch] (hxcomm) {Connection\\\small\textit{hxcomm}};
+	\node[layer, draw=magenta, thick, right=0.9cm of hxcomm] (ayo) {Memory Management\\\small\textit{ayo}};
+	\node[layer, below=0.5cm of hxcomm] (quiggeldy) {quiggeldy\\\small\textit{hxcomm}};
+	\node[layer, left=1cm of quiggeldy] (hostarq) {Host-ARQ (HW)\\\small\textit{sctrltp}};
+	\node[layer, right=0.9cm of quiggeldy] (flange) {Co-Simulation\\\small\textit{flange}};
+
+	\node[layer, right=0.5cm of stadls, minimum height=2.9cm] (expertExperiments) {Comissioning /\\Expert Experiments};
+	\node[layer, minimum height=2.9cm] (earlyPrototyping) at ($(fisch)!0.5!(hxcomm)+(8.8cm,0)$) {Early Prototyping};
+	\node[layer, right=2.75cm of hxtorch] (neuroscience) {Neuroscience /\\Machine Learning};
+
+	\node[anchor=center, minimum width=2cm, text width=1.7cm, minimum height=1.2cm, align=left, left=0.32cm of pynn] (mw) {\small Modelling\\Wrapper};
+	\node[anchor=east, align=left] (ed) at ($(networkGraph.west)+(-0.65cm,0.25cm)$) {\small Experiment Description};
+	\node[anchor=west, align=left, fill=color4!70] (ca) at ($(networkGraph.east)+(0.5cm,0.25cm)$) {\small Calibration};
+	\node[anchor=east, align=left] (ha) at ($(lola.west)+(-0.95cm,0.25cm)$) {\small Hardware Abstraction};
+	\node[anchor=east, align=left] (co) at ($(hxcomm.west)+(-1.85cm,0.25cm)$) {\small Communication};
+	\node[anchor=north, align=left] (ap) at ($(earlyPrototyping.south)+(-0.7cm,-1.1cm)$) {\small Applications};
+
+	\node[anchor=center, minimum width=3.6cm, text width=3.4cm, minimum height=1.2cm, align=left, right=-1.45cm of hxtorch] (f1) {};
+	\node[anchor=center, minimum width=4.0cm, text width=3.4cm, minimum height=1.2cm, align=left, right=0.5cm of networkGraph] (f2) {};
+	\node[anchor=center, minimum width=3.6cm, text width=3.4cm, minimum height=1.2cm, align=left, right=0.9cm of signalFlowGraph] (f3) {};
+	\node[anchor=center, minimum width=3.6cm, text width=3.4cm, minimum height=1.2cm, align=left, right=0.5cm of flange] (f4) {};
+
+	\begin{scope}[on background layer]
+		\node[draw, fill, rounded corners, color=color0!70, fit=(earlyPrototyping) (expertExperiments) (neuroscience) (ap) (f4)] {};
+		\node[draw, fill, rounded corners, color=color1!70, fit=(hxcomm) (flange) (hostarq) (quiggeldy) (co)] {};
+		\node[draw, fill, rounded corners, color=color2!70, fit=(haldls) (hwdb) (halco) (lola) (stadls) (ha)] {};
+		\node[draw, fill, rounded corners, color=color4!70, fit=(f2) (f3) (ca)] {};
+		\node[draw, fill, rounded corners, color=color5!70, fit=(pynn) (hxtorch) (mw) (f1)] {};
+	\end{scope}
+
+	\draw[->] (pynn) -- (networkGraph);
+	\draw[->] (hxtorch) -- (networkGraph);
+	\draw[->] (networkGraph) -- (signalFlowGraph);
+	\draw[->] (networkGraph) -- (placeRoute);
+	\draw[->] (placeRoute) -- (signalFlowGraph);
+	\draw[->] (signalFlowGraph) -- (lola);
+	\draw[->] (signalFlowGraph) -- (stadls);
+	\draw[->] (calix) -- (stadls);
+	\draw[->] (calix) -- (lola);
+	\draw[<->] (hxcomm) -- (ayo);
+	\begin{scope}[on background layer]
+		\draw[->, dashed] ($(calix.south)+(0.8,0)$) -- ($(libnux.north)+(0.8,0)$);
+		\draw[<-] (calix) -- (pynn);
+		\draw[<-] (calix) -- (hxtorch);
+		\node[draw, fill, rounded corners, color=color3!70, fit=(networkGraph) (signalFlowGraph) (placeRoute) (ed)] {};
+		\draw[->, dashed] (signalFlowGraph.east) -- ($(signalFlowGraph.east)+(0.6,0)$) -- ($(signalFlowGraph.east)+(1.95,-1.4)$) -- ($(libnux.north)+(-0.8,0)$);
+	\end{scope}
+	\draw[->] (lola) -- (haldls);
+	\draw[<-] (lola) -- (stadls);
+	\draw[<-] (haldls) -- (stadls);
+	\draw[->] (stadls) -- (fisch);
+	\draw[<-] (halco) -- (lola);
+	\draw[<-] (halco) -- (haldls);
+	\draw[<-] (halco) -- (hwdb);
+	\draw[<-] (halco) -- (fisch);
+	\draw[<-] (hwdb) -- (hxcomm);
+	\draw[->] (haldls) -- (fisch);
+	\draw[->] (fisch) -- (hxcomm);
+	\draw[->] (hxcomm) -- (quiggeldy);
+	\draw[->] (hxcomm) -- (hostarq);
+	\draw[->] (hxcomm) -- (flange);
+	\draw[->] (quiggeldy) -- (flange);
+	\draw[->] (quiggeldy) -- (hostarq);
+\end{tikzpicture}
+
+% \end{document}
